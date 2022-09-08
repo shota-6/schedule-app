@@ -5,8 +5,6 @@ export const HomeUser: FC = memo(() => {
   return (
     <>
       <h1>ユーザーHOMEページです</h1>
-      <br />
-      <Link to="/">ユーザーログインページに移動</Link>
     </>
   );
 });
