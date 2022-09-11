@@ -62,7 +62,7 @@ export const WithSubNavigation: FC = () => {
             color={useColorModeValue("gray.800", "white")}
           >
             <NavLink to="/user_home">
-                <Logo />
+              <Logo />
             </NavLink>
           </Text>
 
@@ -77,29 +77,24 @@ export const WithSubNavigation: FC = () => {
           direction={"row"}
           spacing={6}
         >
-
-          <Link
+          <Button
             as={RouterLink}
             to="/"
             p={2}
             fontSize={"sm"}
             fontWeight={400}
-            style={{
-              whiteSpace: "nowrap",
-              display: "inline-flex",
-              alignItems: "end",
-            }}
           >
             ログイン
-          </Link>
+          </Button>
 
           <Button
+            as={RouterLink}
+            to="/sign-up"
             display={{ base: "none", md: "inline-flex" }}
             fontSize={"sm"}
             fontWeight={600}
             color={"white"}
             bg={"blue.500"}
-            //   href={'#'}
             _hover={{
               bg: "blue.400",
             }}
@@ -285,28 +280,28 @@ const NAV_ITEMS: Array<NavItem> = [
         subLabel: "新規のプロジェクト開始する",
         href: "#",
       },
-    //   {
-    //     label: "New & Noteworthy",
-    //     subLabel: "Up-and-coming Designers",
-    //     href: "#",
-    //   },
+      //   {
+      //     label: "New & Noteworthy",
+      //     subLabel: "Up-and-coming Designers",
+      //     href: "#",
+      //   },
     ],
   },
-//   {
-//     label: "Find Work",
-//     children: [
-//       {
-//         label: "Job Board",
-//         subLabel: "Find your dream design job",
-//         href: "#",
-//       },
-//       {
-//         label: "Freelance Projects",
-//         subLabel: "An exclusive list for contract work",
-//         href: "#",
-//       },
-//     ],
-//   },
+  //   {
+  //     label: "Find Work",
+  //     children: [
+  //       {
+  //         label: "Job Board",
+  //         subLabel: "Find your dream design job",
+  //         href: "#",
+  //       },
+  //       {
+  //         label: "Freelance Projects",
+  //         subLabel: "An exclusive list for contract work",
+  //         href: "#",
+  //       },
+  //     ],
+  //   },
   {
     label: "使い方",
     href: "#",
