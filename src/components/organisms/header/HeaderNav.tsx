@@ -16,6 +16,13 @@ import {
   useColorModeValue,
   useBreakpointValue,
   useDisclosure,
+  Menu,
+  MenuButton,
+  Avatar,
+  MenuList,
+  Center,
+  MenuDivider,
+  MenuItem,
 } from "@chakra-ui/react";
 import {
   HamburgerIcon,
@@ -61,7 +68,7 @@ export const WithSubNavigation: FC = () => {
             fontFamily={"heading"}
             color={useColorModeValue("gray.800", "white")}
           >
-            <NavLink to="/user_home">
+            <NavLink to="/home">
               <Logo />
             </NavLink>
           </Text>
@@ -77,7 +84,7 @@ export const WithSubNavigation: FC = () => {
           direction={"row"}
           spacing={6}
         >
-          <Button
+          {/* <Button
             as={RouterLink}
             to="/"
             p={2}
@@ -89,7 +96,7 @@ export const WithSubNavigation: FC = () => {
 
           <Button
             as={RouterLink}
-            to="/sign-up"
+            to="/"
             display={{ base: "none", md: "inline-flex" }}
             fontSize={"sm"}
             fontWeight={600}
@@ -100,7 +107,37 @@ export const WithSubNavigation: FC = () => {
             }}
           >
             ユーザー登録
-          </Button>
+          </Button> */}
+          <Menu>
+                <MenuButton
+                  as={Button}
+                  rounded={'full'}
+                  variant={'link'}
+                  cursor={'pointer'}
+                  minW={0}>
+                  <Avatar
+                    size={'sm'}
+                    src={'https://avatars.dicebear.com/api/male/username.svg'}
+                  />
+                </MenuButton>
+                <MenuList alignItems={'center'}>
+                  <br />
+                  <Center>
+                    <Avatar
+                      size={'2xl'}
+                      src={'https://avatars.dicebear.com/api/male/username.svg'}
+                    />
+                  </Center>
+                  <br />
+                  <Center>
+                    <p>Username</p>
+                  </Center>
+                  <br />
+                  <MenuDivider />
+                  <MenuItem>プロフィール編集</MenuItem>
+                  <MenuItem>ログアウト</MenuItem>
+                </MenuList>
+              </Menu>
         </Stack>
       </Flex>
 
