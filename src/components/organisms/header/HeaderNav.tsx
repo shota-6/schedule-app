@@ -1,5 +1,16 @@
-import { FC } from "react";
-import { NavLink as RouterLink, NavLink } from "react-router-dom";
+import { FC, useContext, useState, useEffect } from "react";
+import { NavLink as RouterLink, NavLink, useNavigate } from "react-router-dom";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
+import { getAuth, updateProfile } from "firebase/auth";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { auth, db, storage } from "../../../firebase";
 import {
   Box,
   Flex,
@@ -31,9 +42,65 @@ import {
   ChevronRightIcon,
 } from "@chakra-ui/icons";
 import { Logo } from "../../atoms/Logo";
+import { AppContext, AppContextType } from "../../../App";
+import { InitialFocus } from "./ProfileModal";
+import { useProfile } from "../../../hooks/useProfile";
 
 export const WithSubNavigation: FC = () => {
   const { isOpen, onToggle } = useDisclosure();
+  //   const [name, setName] = useState<string>("");
+  const auth = getAuth();
+  const user = auth.currentUser;
+
+  const context: AppContextType = useContext(AppContext);
+
+  //   if( user !== null) {
+  //       console.log(user.displayName)
+  //       updateProfile(user, {
+  //           displayName: name
+  //         })
+  //     }
+  //     console.log({name})
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    auth.signOut();
+    navigate("/");
+  };
+
+  // const getAuthUserInfo = async () => {
+  //     if( auth.currentUser !== null){
+  //       const usersCollectionRef = query(collection(db, "users"), where("uid", "==", auth.currentUser?.uid ));
+  //       getDocs(usersCollectionRef).then((querySnapshot) => {
+  //         querySnapshot.docs.forEach((doc) => console.log(doc.data()));
+  //         console.log(auth.currentUser?.displayName)
+  //       });
+  //     } else {
+  //       console.log('f')
+  //     }
+  // };
+
+  // useEffect(() => {
+  // getAuthUserInfo();
+  // }, []);
+
+  //   get avatar
+  //   const firestorage = storage;
+  //   const gsReference = ref(
+  //     firestorage,
+  //     `gs://tasks-app-d464a.appspot.com/${context.avatarImg}`
+  //   );
+
+  //   getDownloadURL(gsReference)
+  //     .then((url) => {
+  //       context.setAvatarImg(url);
+  //     })
+  //     .catch((err) => console.log(err));
+  //     console.log(context.avatarImg)
+
+  const profileData = useProfile();
+  const profile = profileData.profile;
+
+  // console.log(profile?.image)
 
   return (
     <Box>
@@ -109,35 +176,61 @@ export const WithSubNavigation: FC = () => {
             ユーザー登録
           </Button> */}
           <Menu>
-                <MenuButton
-                  as={Button}
-                  rounded={'full'}
-                  variant={'link'}
-                  cursor={'pointer'}
-                  minW={0}>
-                  <Avatar
-                    size={'sm'}
-                    src={'https://avatars.dicebear.com/api/male/username.svg'}
-                  />
-                </MenuButton>
-                <MenuList alignItems={'center'}>
-                  <br />
-                  <Center>
-                    <Avatar
-                      size={'2xl'}
-                      src={'https://avatars.dicebear.com/api/male/username.svg'}
-                    />
-                  </Center>
-                  <br />
-                  <Center>
-                    <p>Username</p>
-                  </Center>
-                  <br />
-                  <MenuDivider />
-                  <MenuItem>プロフィール編集</MenuItem>
-                  <MenuItem>ログアウト</MenuItem>
-                </MenuList>
-              </Menu>
+            <MenuButton
+              as={Button}
+              rounded={"full"}
+              variant={"link"}
+              cursor={"pointer"}
+              minW={0}
+            >
+              <Avatar
+                size={"sm"}
+                src={
+                  context.file
+                    ? URL.createObjectURL(context.file)
+                    : profile
+                    ? profile?.avatarImg
+                    : ""
+                }
+              />
+            </MenuButton>
+            <MenuList alignItems={"center"}>
+              <br />
+              <Center>
+                <Avatar
+                  size={"2xl"}
+                  src={
+                    context.file
+                      ? URL.createObjectURL(context.file)
+                      : profile
+                      ? profile?.avatarImg
+                      : ""
+                  }
+                />
+              </Center>
+              <br />
+              <Center>
+                {/* {user !== null ? <p>{user?.displayName}</p> : <p>no name</p>} */}
+                {context.nickName
+                  ? context.nickName
+                  : profile
+                  ? profile.name
+                  : ""}
+              </Center>
+              <br />
+              <MenuDivider />
+              <InitialFocus />
+              <Button
+                width="100%"
+                bg="white"
+                borderRadius={0}
+                fontWeight={500}
+                onClick={handleLogout}
+              >
+                ログアウト
+              </Button>
+            </MenuList>
+          </Menu>
         </Stack>
       </Flex>
 
