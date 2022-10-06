@@ -1,18 +1,9 @@
 import { auth, db } from "../../firebase";
 import {
-  getFirestore,
   collection,
   addDoc,
-  getDocs,
-  query,
-  where,
 } from "firebase/firestore";
 import {
-  setPersistence,
-  inMemoryPersistence,
-  signInWithRedirect,
-  GoogleAuthProvider,
-  browserSessionPersistence,
   updateProfile,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -34,7 +25,7 @@ import {
   Link,
   useToast,
 } from "@chakra-ui/react";
-import { FC, memo, useState, useContext, useEffect } from "react";
+import { FC, memo, useState, useContext } from "react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 // import { NavLink as RouterLink } from "react-router-dom";
 import { AppContext, AppContextType } from "../../App";
@@ -259,7 +250,7 @@ export const Auth: FC = memo(() => {
                 <span
                   style={{ fontSize: "14px", verticalAlign: "text-bottom" }}
                 >
-                  　(6文字以上)
+                  (6文字以上)
                 </span>
               </FormLabel>
               <InputGroup>
