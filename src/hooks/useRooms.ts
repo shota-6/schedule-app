@@ -1,56 +1,37 @@
 import { useContext, useEffect, useState } from "react";
 import {
+  DocumentData,
   collection,
   query,
   where,
   getDocs,
-  doc,
-  getDoc,
 } from "firebase/firestore";
+import { useParams } from "react-router-dom";
 import { Auth, getAuth, onAuthStateChanged } from "firebase/auth";
 import { db } from "../firebase";
-import { AppContext, AppContextType } from "../App";
-
-type projectArrMap = {
-  id: string;
-};
-
 export const useRooms = () => {
-  const context: AppContextType = useContext(AppContext);
-  const roomsInfo = context.roomsInfo;
+  const [rooms, setRooms] = useState<DocumentData | null>(null);
+  const params = useParams();
 
   useEffect(() => {
     const auth: Auth = getAuth();
     onAuthStateChanged(auth, async (user) => {
       if (user) {
-        const userUid = user.uid;
+        const projectId = params.id;
 
-        const q = query(collection(db, "rooms"), where("uid", "==", userUid));
-        // const querySnapshot = await getDocs(q);
-
-        // const queryDocumentSnapshot = querySnapshot.docs;
-        // const documentData = queryDocumentSnapshot[0];
-
-        // context.setRoomsInfo(documentData.data());
-
-        // querySnapshot.forEach((doc) => {
-        //     if (doc.exists()) {
-        //         const docData = doc.data();
-        //         docData.id = doc.id;
-        //         context.setRoomsInfo(docData);
-
-        //     } else {
-        //       console.log("No such document");
-        //     }
-        // });
-
-
-        // getDocs(q).then((querySnapshot) => {
-        //   context.setRoomsInfo(querySnapshot.docs.map((doc) => doc.data()));
-        // });
-
+        const q = query(
+          collection(db, "rooms"),
+          where("projectId", "==", projectId)
+        );
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+          const docData = doc.data();
+          docData.id = doc.id;
+          setRooms(docData);
+          // console.log(docData)
+        });
       }
     });
   }, []);
-  return { roomsInfo };
+  return { rooms };
 };

@@ -3,9 +3,26 @@ import { ChakraProvider } from "@chakra-ui/react";
 import theme from "./theme/theme";
 import { Router } from "./components/pages/router/Router";
 import { useState, createContext, FC, useContext } from "react";
-import { DocumentData } from "firebase/firestore";
+import { DocumentData, Timestamp } from "firebase/firestore";
 
 // const photoURL = auth.currentUser?.photoURL;
+
+type roomsProjectData = {
+  projectId: string;
+  projectName: string;
+  projectPass: string;
+  uid: string;
+  timestamp: string;
+};
+
+type chatMessageData = {
+  message: string;
+  createdAt: string;
+  cid: string,
+  name: string;
+  uid: string;
+  AvatarImg: string;
+};
 
 export interface AppContextType {
   nickName: string;
@@ -34,6 +51,12 @@ export interface AppContextType {
 
   roomsInfo: DocumentData | null;
   setRoomsInfo: (roomsInfo: DocumentData | null) => void;
+
+  roomArr: roomsProjectData[];
+  setRoomArr: (roomArr: roomsProjectData[]) => void;
+
+  chatDataArr: chatMessageData[];
+  setChatDataArr: (chatDataArr: chatMessageData[]) => void;
 }
 
 export const AppContext = createContext<AppContextType>({
@@ -63,6 +86,12 @@ export const AppContext = createContext<AppContextType>({
 
   roomsInfo: null,
   setRoomsInfo: (roomsInfo: DocumentData | null) => {},
+
+  roomArr: [],
+  setRoomArr: (roomArr: roomsProjectData[]) => {},
+
+  chatDataArr: [],
+  setChatDataArr: (chatDataArr: chatMessageData[]) => {},
 });
 
 const App: FC = () => {
@@ -76,8 +105,15 @@ const App: FC = () => {
   const [projectName, setProjectName] = useState(context.projectName);
   const [projectPass, setProjectPass] = useState(context.projectPass);
   const [projectId, setProjectId] = useState(context.projectPass);
-  const [projectNameArr, setProjectNameArr] = useState<string[]>(context.projectNameArr);
+  const [projectNameArr, setProjectNameArr] = useState<string[]>(
+    context.projectNameArr
+  );
   const [roomsInfo, setRoomsInfo] = useState<DocumentData | null>(null);
+
+  const [roomArr, setRoomArr] = useState<roomsProjectData[]>(context.roomArr);
+  const [chatDataArr, setChatDataArr] = useState<chatMessageData[]>(
+    context.chatDataArr
+  );
 
   const newContext: AppContextType = {
     nickName,
@@ -104,8 +140,14 @@ const App: FC = () => {
     projectNameArr,
     setProjectNameArr,
 
-    roomsInfo, 
-    setRoomsInfo
+    roomsInfo,
+    setRoomsInfo,
+
+    roomArr,
+    setRoomArr,
+
+    chatDataArr,
+    setChatDataArr,
   };
 
   // const getAuthUserInfo = async () => {

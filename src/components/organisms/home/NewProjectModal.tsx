@@ -48,25 +48,26 @@ export const NewsProjectModal: FC<projectModalProps> = memo((props) => {
     return result;
   };
 
+
   const createNewProject = async () => {
     try {
-      // const newNum2 = createProjectId();
-      // context.setProjectId(newNum2);
       if (auth.currentUser !== null) {
         const uid = auth.currentUser.uid;
 
         const newNum = createProjectId();
-        context.setProjectId(newNum);
+        // context.setProjectId(newNum);
 
         await addDoc(collection(db, "rooms"), {
           projectName: context.projectName,
           projectPass: context.projectPass,
-          projectId: context.projectId,
+          projectId: newNum,
           uid: uid,
           timestamp: serverTimestamp()
         });
+        
         console.log("create new project");
-        console.log(context.projectId);
+        // console.log(context.projectId);
+        console.log(newNum);
         toast({
           title: `「${context.projectName}」作成完了`,
           status: "success",

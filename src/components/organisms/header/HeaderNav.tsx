@@ -1,4 +1,4 @@
-import { FC, useContext } from "react";
+import { FC, useContext, useEffect } from "react";
 import { NavLink as RouterLink, NavLink, useNavigate } from "react-router-dom";
 import { getAuth } from "firebase/auth";
 import {
@@ -10,8 +10,6 @@ import {
   Stack,
   Collapse,
   Link,
-  Popover,
-  PopoverTrigger,
   useColorModeValue,
   useBreakpointValue,
   useDisclosure,
@@ -82,7 +80,9 @@ export const WithSubNavigation: FC = () => {
   const profileData = useProfile();
   const profile = profileData.profile;
 
-  // console.log(profile?.image)
+  //   useEffect(() => {
+  //     console.log(profile?.avatarImg)
+  // }, [profile]);
 
   return (
     <Box style={{ position: "fixed", width: "100%", zIndex: "100" }}>
@@ -224,92 +224,46 @@ export const WithSubNavigation: FC = () => {
 };
 
 const DesktopNav = () => {
-  const linkColor = useColorModeValue("gray.600", "gray.200");
-  const linkHoverColor = useColorModeValue("gray.800", "white");
-
   return (
     <Stack direction={"row"} spacing={4}>
-      {NAV_ITEMS.map((navItem) => (
-        <Box key={navItem.label}>
-          <Popover trigger={"hover"} placement={"bottom-start"}>
-            <PopoverTrigger>
-              <Link
-                p={2}
-                href={navItem.href ?? "#"}
-                fontSize={"sm"}
-                fontWeight={500}
-                color={linkColor}
-                _hover={{
-                  textDecoration: "none",
-                  color: linkHoverColor,
-                }}
-              >
-                {navItem.label}
-              </Link>
-            </PopoverTrigger>
-          </Popover>
-        </Box>
-      ))}
+      <Box>
+        <Link
+          as={RouterLink}
+          to="/home"
+          color="gray.600"
+          p={2}
+          fontSize={"sm"}
+          fontWeight={500}
+          _hover={{
+            textDecoration: "none",
+            color: "gray.800",
+          }}
+        >
+          プロジェクト一覧
+        </Link>
+      </Box>
     </Stack>
   );
 };
 
 const MobileNav = () => {
   return (
-    <Stack
-      bg={useColorModeValue("white", "gray.800")}
-      p={4}
-      display={{ md: "none" }}
-    >
-      {NAV_ITEMS.map((navItem) => (
-        <MobileNavItem key={navItem.label} {...navItem} />
-      ))}
-    </Stack>
-  );
-};
-
-const MobileNavItem = ({ label, href }: NavItem) => {
-  return (
-    <Stack spacing={4}>
-      <Flex
-        py={2}
-        as={Link}
-        href={href ?? "#"}
-        justify={"space-between"}
-        align={"center"}
-        _hover={{
-          textDecoration: "none",
-        }}
-      >
-        <Text
+    <Stack spacing={4} bg="white" p={4} display={{ md: "none" }}>
+      <Box py={2}>
+        <Link
           fontWeight={600}
-          color={useColorModeValue("gray.600", "gray.200")}
+          color="gray.600"
+          as={RouterLink}
+          to="/home"
+          display="block"
+          py={2}
+          _hover={{
+            textDecoration: "none",
+          }}
         >
-          {label}
-        </Text>
-      </Flex>
+          プロジェクト一覧
+        </Link>
+      </Box>
     </Stack>
   );
 };
-
-interface NavItem {
-  label: string;
-  href?: string;
-}
-
-const NAV_ITEMS: Array<NavItem> = [
-  {
-    label: "プロジェクト一覧",
-    href: "#",
-  },
-
-  {
-    label: "使い方",
-    href: "#",
-  },
-
-  {
-    label: "設定",
-    href: "#",
-  },
-];

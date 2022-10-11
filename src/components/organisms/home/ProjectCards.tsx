@@ -27,33 +27,35 @@ import {
 import { db } from "../../../firebase";
 import { getAuth } from "firebase/auth";
 import * as CSS from "csstype";
+import { useNavigate } from "react-router-dom";
 
 export const createProjects = () => {
   console.log("test");
 };
 
-type roomsProjectData = {
-  projectId: string;
-  projectName: string;
-  projectPass: string;
-  uid: string;
-  timestamp: string;
-};
+// type roomsProjectData = {
+//   projectId: string;
+//   projectName: string;
+//   projectPass: string;
+//   uid: string;
+//   timestamp: string;
+// };
 
-console.log();
 // const roomMap = new Map<string, roomsProjectData>();
 
 export const ProjectCards: FC = memo(() => {
   const context: AppContextType = useContext(AppContext);
   const [showPass, setShowPass] = useState<boolean>(false);
 
-  const [roomArr, setRoomArr] = useState<roomsProjectData[]>([]);
+  // const [roomArr, setRoomArr] = useState<roomsProjectData[]>([]);
 
   // const roomsData = useRooms();
   // const rooms = roomsData.roomsInfo;
 
   const auth = getAuth();
   const user = auth.currentUser;
+
+  const navigate = useNavigate();
 
   // console.log(context.projectNameArr);
   useEffect(() => {
@@ -88,7 +90,7 @@ export const ProjectCards: FC = memo(() => {
       //   });
 
       // リアルタイムのデータ取得
-      const addProject = onSnapshot(q, (querySnapshot) => {
+      onSnapshot(q, (querySnapshot) => {
         const result: any[] = [];
         querySnapshot.forEach((doc) => {
           const roomArr = {
@@ -101,10 +103,12 @@ export const ProjectCards: FC = memo(() => {
 
           result.push(roomArr);
         });
-        setRoomArr(result);
+        context.setRoomArr(result);
       });
     }
   }, []);
+
+
 
   const noData: CSS.Properties = {
     display: "flex",
@@ -115,7 +119,7 @@ export const ProjectCards: FC = memo(() => {
     fontWeight: "600",
   };
 
-  if (roomArr.length) {
+  if (context.roomArr.length) {
     return (
       <Grid
         templateColumns={{
@@ -128,8 +132,8 @@ export const ProjectCards: FC = memo(() => {
         py={{ base: 36, md: 36, lg: 44 }}
       >
         {/* {each.projectId} {each.projectName} {each.projectPass} {each.uid} */}
-        {roomArr.map((each) => (
-          <GridItem w="100%" key={each.uid}>
+        {context.roomArr.map((each) => (
+          <GridItem w="100%" key={each.projectId}>
             <Center>
               <Box
                 // maxW={"320px"}
@@ -192,6 +196,7 @@ export const ProjectCards: FC = memo(() => {
                   _focus={{
                     bg: "blue.400",
                   }}
+                  onClick={() => {navigate(`/room/${each.projectId}`)}}
                 >
                   参加
                 </Button>

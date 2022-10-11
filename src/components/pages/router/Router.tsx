@@ -5,6 +5,7 @@ import { HomeUser } from "../HomeUser";
 import { HeaderLayout } from "../../template/HeaderLayout";
 import { Auth } from "../Auth";
 import { LoginVisiter } from "../LoginVisiter";
+import { ProjectRoom } from "../ProjectRoom";
 
 export const Router: FC = memo(() => {
   return (
@@ -14,6 +15,7 @@ export const Router: FC = memo(() => {
         <Route path="/visiter" element={<LoginVisiter />} />
         <Route path="/" element={<HeaderLayout />}>
           <Route path="/home" element={<HomeUser />} />
+          <Route path="/room/:id" element={<ProjectRoom />} />
         </Route>
       </Routes>
     </BrowserRouter>
