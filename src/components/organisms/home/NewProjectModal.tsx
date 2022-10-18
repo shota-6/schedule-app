@@ -19,7 +19,7 @@ import {
 } from "@chakra-ui/react";
 
 import { AppContext, AppContextType } from "../../../App";
-import {createProjects} from '../../organisms/home/ProjectCards'
+import { createProjects } from "../../organisms/home/ProjectCards";
 
 type projectModalProps = {
   isOpen: boolean;
@@ -31,7 +31,7 @@ export const NewsProjectModal: FC<projectModalProps> = memo((props) => {
   const { isOpen, onClose } = props;
   const [checkProjectName, setCheckProjectName] = useState<boolean>(false);
   const [checkProjectPass, setCheckProjectPass] = useState<boolean>(false);
-  
+
   const toast = useToast();
 
   // プロジェクトID乱数
@@ -48,7 +48,6 @@ export const NewsProjectModal: FC<projectModalProps> = memo((props) => {
     return result;
   };
 
-
   const createNewProject = async () => {
     try {
       if (auth.currentUser !== null) {
@@ -62,9 +61,9 @@ export const NewsProjectModal: FC<projectModalProps> = memo((props) => {
           projectPass: context.projectPass,
           projectId: newNum,
           uid: uid,
-          timestamp: serverTimestamp()
+          timestamp: serverTimestamp(),
         });
-        
+
         console.log("create new project");
         // console.log(context.projectId);
         console.log(newNum);
@@ -90,9 +89,10 @@ export const NewsProjectModal: FC<projectModalProps> = memo((props) => {
         isClosable: true,
         position: "top",
       });
+      setCheckProjectName(false);
+      setCheckProjectPass(false);
     }
   };
-
 
   const handleProjectName = (event: React.ChangeEvent<HTMLInputElement>) => {
     context.setProjectName(event.currentTarget.value);
@@ -114,11 +114,21 @@ export const NewsProjectModal: FC<projectModalProps> = memo((props) => {
   const checkCreateProject = [checkProjectName, checkProjectPass];
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      size={"xl"}
+      closeOnOverlayClick={false}
+    >
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>プロジェクトの新規作成</ModalHeader>
-        <ModalCloseButton />
+        <ModalCloseButton
+          onClick={() => {
+            setCheckProjectName(false);
+            setCheckProjectPass(false);
+          }}
+        />
         <ModalBody>
           <Stack spacing={6}>
             <FormControl id="projectName" isRequired>
@@ -171,7 +181,15 @@ export const NewsProjectModal: FC<projectModalProps> = memo((props) => {
           >
             作成
           </Button>
-          <Button fontWeight={500} mr={3} onClick={onClose}>
+          <Button
+            fontWeight={500}
+            mr={3}
+            onClick={() => {
+              onClose();
+              setCheckProjectName(false);
+              setCheckProjectPass(false);
+            }}
+          >
             閉じる
           </Button>
         </ModalFooter>

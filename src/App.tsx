@@ -18,10 +18,23 @@ type roomsProjectData = {
 type chatMessageData = {
   message: string;
   createdAt: string;
-  cid: string,
+  cid: string;
   name: string;
   uid: string;
   AvatarImg: string;
+};
+
+type todoData = {
+  title: string;
+  text: string;
+  startDate: string;
+  endDate: string;
+  priority: string;
+  name: string;
+  uid: string;
+  tid: string;
+  status: string;
+  timestamp: string;
 };
 
 export interface AppContextType {
@@ -57,6 +70,24 @@ export interface AppContextType {
 
   chatDataArr: chatMessageData[];
   setChatDataArr: (chatDataArr: chatMessageData[]) => void;
+
+  taskName: string;
+  setTaskName: (taskName: string) => void;
+
+  taskText: string;
+  setTaskText: (taskText: string) => void;
+
+  taskSelect: string;
+  setTaskSelect: (taskSelect: string) => void;
+
+  todoArr: todoData[];
+  setTodoArr: (todoArr: todoData[]) => void;
+
+  todoStatus: string;
+  setTodoStatus: (todoStatus: string) => void;
+
+  todoStatusJa: string;
+  setTodoStatusJa: (todoStatusJa: string) => void;
 }
 
 export const AppContext = createContext<AppContextType>({
@@ -92,6 +123,24 @@ export const AppContext = createContext<AppContextType>({
 
   chatDataArr: [],
   setChatDataArr: (chatDataArr: chatMessageData[]) => {},
+
+  taskName: ``,
+  setTaskName: (taskName: string) => {},
+
+  taskText: ``,
+  setTaskText: (taskText: string) => {},
+
+  taskSelect: ``,
+  setTaskSelect: (taskSelect: string) => {},
+
+  todoArr: [],
+  setTodoArr: (todoArr: todoData[]) => {},
+
+  todoStatus: ``,
+  setTodoStatus: (todoStatus: string) => {},
+
+  todoStatusJa: ``,
+  setTodoStatusJa: (todoStatusJa: string) => {},
 });
 
 const App: FC = () => {
@@ -114,6 +163,15 @@ const App: FC = () => {
   const [chatDataArr, setChatDataArr] = useState<chatMessageData[]>(
     context.chatDataArr
   );
+
+  const [taskName, setTaskName] = useState(context.taskName);
+  const [taskText, setTaskText] = useState(context.taskText);
+  const [taskSelect, setTaskSelect] = useState(context.taskSelect);
+
+  const [todoArr, setTodoArr] = useState<todoData[]>(context.todoArr);
+
+  const [todoStatus, setTodoStatus] = useState(context.todoStatus);
+  const [todoStatusJa, setTodoStatusJa] = useState(context.todoStatusJa);
 
   const newContext: AppContextType = {
     nickName,
@@ -148,23 +206,26 @@ const App: FC = () => {
 
     chatDataArr,
     setChatDataArr,
+
+    taskName, 
+    setTaskName,
+
+    taskText, 
+    setTaskText,
+
+    taskSelect, 
+    setTaskSelect,
+
+    todoArr, 
+    setTodoArr,
+
+    todoStatus, 
+    setTodoStatus,
+
+    todoStatusJa, 
+    setTodoStatusJa,
   };
 
-  // const getAuthUserInfo = async () => {
-  //       if( auth.currentUser !== null){
-  //         const usersCollectionRef = query(collection(db, "users"), where("name", "==", 'sho'));
-  //         getDocs(usersCollectionRef).then((querySnapshot) => {
-  //           querySnapshot.docs.forEach((doc) => console.log(doc.data()));
-  //         });
-  //       } else {
-  //         console.log(auth.currentUser)
-  //         console.log('f')
-  //       }
-  // };
-
-  // useEffect(() => {
-  //   getAuthUserInfo();
-  // }, []);
 
   return (
     <ChakraProvider theme={theme}>

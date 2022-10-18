@@ -1,4 +1,4 @@
-import { FC, useContext, useEffect } from "react";
+import { FC, useContext, useEffect, useState } from "react";
 import { NavLink as RouterLink, NavLink, useNavigate } from "react-router-dom";
 import { getAuth } from "firebase/auth";
 import {
@@ -25,12 +25,27 @@ import { Logo } from "../../atoms/Logo";
 import { AppContext, AppContextType } from "../../../App";
 import { InitialFocus } from "./ProfileModal";
 import { useProfile } from "../../../hooks/useProfile";
+import { db } from "../../../firebase";
+
+import styles from "../../../theme/Theme.module.scss";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
+
+type userHeaderData = {
+  message: string;
+  createdAt: string;
+  cid: string;
+  name: string;
+  uid: string;
+  AvatarImg: string;
+};
 
 export const WithSubNavigation: FC = () => {
   const { isOpen, onToggle } = useDisclosure();
   //   const [name, setName] = useState<string>("");
   const auth = getAuth();
   const user = auth.currentUser;
+
+  const [userArr, setUserArr] = useState<userHeaderData[]>([]);
 
   const context: AppContextType = useContext(AppContext);
 
@@ -83,6 +98,29 @@ export const WithSubNavigation: FC = () => {
   //   useEffect(() => {
   //     console.log(profile?.avatarImg)
   // }, [profile]);
+
+  useEffect(() => {
+    if (user) {
+      const userUid = user.uid;
+      const q = query(collection(db, "users"), where("uid", "==", userUid));
+
+      // リアルタイムのデータ取得
+      onSnapshot(q, (querySnapshot) => {
+        const result: any[] = [];
+        querySnapshot.forEach((doc) => {
+          const userArr = {
+            name: doc.data().name ?? "",
+            email: doc.data().email ?? "",
+            avatarImg: doc.data().avatarImg ?? "",
+            uid: doc.id,
+          };
+
+          result.push(userArr);
+        });
+        setUserArr(result);
+      });
+    }
+  }, []);
 
   return (
     <Box style={{ position: "fixed", width: "100%", zIndex: "100" }}>
@@ -193,11 +231,12 @@ export const WithSubNavigation: FC = () => {
               <br />
               <Center>
                 {/* {user !== null ? <p>{user?.displayName}</p> : <p>no name</p>} */}
-                {context.nickName
+                {/* {context.nickName
                   ? context.nickName
                   : profile
                   ? profile.name
-                  : ""}
+                  : ""} */}
+                {userArr.map((data) => data.name)}
               </Center>
               <br />
               <MenuDivider />
@@ -217,7 +256,48 @@ export const WithSubNavigation: FC = () => {
       </Flex>
 
       <Collapse in={isOpen} animateOpacity>
-        <MobileNav />
+        <Stack spacing={4} bg="white" display={{ md: "none" }}>
+          <Box>
+            <Link
+              fontWeight={600}
+              color="gray.600"
+              as={RouterLink}
+              to="/home"
+              display="block"
+              py={3}
+              px={5}
+              fontSize="sm"
+              _hover={{
+                textDecoration: "none",
+              }}
+              borderBottom="1px"
+              borderBottomColor="gray.200"
+              className={styles.activeHeaderSpNav}
+              onClick={onToggle}
+            >
+              プロジェクト一覧
+            </Link>
+            <Link
+              fontWeight={600}
+              color="gray.600"
+              as={RouterLink}
+              to="/howto"
+              display="block"
+              py={3}
+              px={5}
+              fontSize="sm"
+              _hover={{
+                textDecoration: "none",
+              }}
+              borderBottom="1px"
+              borderBottomColor="gray.200"
+              className={styles.activeHeaderSpNav}
+              onClick={onToggle}
+            >
+              使い方
+            </Link>
+          </Box>
+        </Stack>
       </Collapse>
     </Box>
   );
@@ -232,36 +312,31 @@ const DesktopNav = () => {
           to="/home"
           color="gray.600"
           p={2}
+          mr={5}
           fontSize={"sm"}
           fontWeight={500}
           _hover={{
             textDecoration: "none",
             color: "gray.800",
           }}
+          className={styles.activeHeaderNav}
         >
           プロジェクト一覧
         </Link>
-      </Box>
-    </Stack>
-  );
-};
-
-const MobileNav = () => {
-  return (
-    <Stack spacing={4} bg="white" p={4} display={{ md: "none" }}>
-      <Box py={2}>
         <Link
-          fontWeight={600}
-          color="gray.600"
           as={RouterLink}
-          to="/home"
-          display="block"
-          py={2}
+          to="/howto"
+          color="gray.600"
+          p={2}
+          fontSize={"sm"}
+          fontWeight={500}
           _hover={{
             textDecoration: "none",
+            color: "gray.800",
           }}
+          className={styles.activeHeaderNav}
         >
-          プロジェクト一覧
+          使い方
         </Link>
       </Box>
     </Stack>

@@ -1,16 +1,10 @@
 import {
   Avatar,
-  Box,
   Flex,
-  Grid,
-  GridItem,
-  Heading,
-  IconButton,
-  Input,
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { FC, memo, useContext, useEffect, useRef, useState } from "react";
+import { FC, memo, useContext, useEffect, useRef } from "react";
 import { AppContext, AppContextType } from "../../../App";
 import { useProfile } from "../../../hooks/useProfile";
 

@@ -1,0 +1,24 @@
+.fc-media-screen {
+  height: 80vh;
+}
+
+.fc .fc-view-harness {
+  overflow: auto;
+}
+.fc .fc-toolbar-title {
+  font-weight: bold;
+}
+@media screen and (max-width: 767px) {
+  .fc .fc-toolbar-title {
+    font-size: 1.25em;
+  }
+  .fc .fc-button {
+    font-size: 0.8em;
+  }
+  .fc .fc-view-harness {
+    margin-bottom: 1.25rem;
+  }
+  .fc-media-screen {
+    height: 75vh;
+  }
+}

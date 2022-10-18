@@ -199,11 +199,17 @@ export const InitialFocus: FC = () => {
         finalFocusRef={finalRef}
         isOpen={isOpen}
         onClose={onClose}
+        closeOnOverlayClick={false}
       >
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>プロフィールの編集</ModalHeader>
-          <ModalCloseButton />
+          <ModalCloseButton
+            onClick={() => {
+              onClose();
+              iconReset();
+            }}
+          />
           <ModalBody pb={6}>
             <FormControl>
               <FormLabel>プロフィール画像</FormLabel>
@@ -270,13 +276,22 @@ export const InitialFocus: FC = () => {
             <Button
               colorScheme="blue"
               mr={3}
-              onClick={saveProfile}
+              onClick={() => {
+                saveProfile();
+                onClose();
+              }}
               isLoading={loading}
               disabled={disableImg && disableName}
             >
               保存
             </Button>
-            <Button fontWeight={500} onClick={onClose}>
+            <Button
+              fontWeight={500}
+              onClick={() => {
+                onClose();
+                iconReset();
+              }}
+            >
               閉じる
             </Button>
           </ModalFooter>

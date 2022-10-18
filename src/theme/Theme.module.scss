@@ -1,0 +1,20 @@
+:local( .activeSidebarNav ){
+    :global &.active{
+        background-color: #3182CE;
+        color: white;
+    }
+    }
+    :local( .activeHeaderNav ){
+    :global &.active{
+        border-bottom: 2px solid #3182CE;
+    }
+    }
+    :local( .activeHeaderSpNav ){
+    :global &.active{
+        color: #3182CE;
+    }
+    }
+  
+    .fc{
+        display: none;
+    }

@@ -1,8 +1,5 @@
 import { auth, db } from "../../firebase";
-import {
-  collection,
-  addDoc,
-} from "firebase/firestore";
+import { collection, addDoc } from "firebase/firestore";
 import {
   updateProfile,
   createUserWithEmailAndPassword,
@@ -21,13 +18,12 @@ import {
   Button,
   Heading,
   Text,
-  useColorModeValue,
   Link,
   useToast,
 } from "@chakra-ui/react";
 import { FC, memo, useState, useContext } from "react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
-// import { NavLink as RouterLink } from "react-router-dom";
+import { NavLink as RouterLink } from "react-router-dom";
 import { AppContext, AppContextType } from "../../App";
 
 export const Auth: FC = memo(() => {
@@ -50,7 +46,10 @@ export const Auth: FC = memo(() => {
   const navigate = useNavigate();
   const toast = useToast();
 
+  
+
   const Register = async () => {
+    setIsLoading(true);
     await createUserWithEmailAndPassword(auth, email, password)
       // updateProfile(user, {
       //   displayName: "Jane Q. User", photoURL: "https://example.com/jane-q-user/profile.jpg"
@@ -99,6 +98,7 @@ export const Auth: FC = memo(() => {
       }
     } catch (e) {
       console.error("Error adding document: ", e);
+      setIsLoading(false);
     }
   };
   // if( user !== null) {
@@ -199,22 +199,22 @@ export const Auth: FC = memo(() => {
       minH={"100vh"}
       align={"center"}
       justify={"center"}
-      bg={useColorModeValue("gray.50", "gray.800")}
+      bg="gray.50"
     >
-      <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
+      <Stack spacing={8} mx={"auto"} w={'xl'} py={12} px={6}>
         <Stack align={"center"}>
-          <Heading fontSize={"4xl"} textAlign={"center"}>
+          <Heading fontSize={"3xl"} textAlign={"center"}>
             {isLogin ? "ログイン" : "新規登録"}
           </Heading>
           <Text fontSize={"lg"} color={"gray.600"} align={"center"}>
             {isLogin
-              ? "共有パスをお持ちの方はこちらからプロジェクトに参加してください。"
+              ? "既に登録済みの方はこちらからログインしてください。"
               : "ユーザー登録を行うと、プロジェクトの作成や共有の機能が使用できるようになります。"}
           </Text>
         </Stack>
         <Box
           rounded={"lg"}
-          bg={useColorModeValue("white", "gray.700")}
+          bg="white"
           boxShadow={"lg"}
           p={8}
         >
@@ -276,7 +276,7 @@ export const Auth: FC = memo(() => {
             <Stack spacing={10} pt={2}>
               <Button
                 type="button"
-                loadingText="ログイン中"
+                loadingText={isLogin ? "ログイン中" : "登録中"}
                 size="lg"
                 bg={"blue.400"}
                 color={"white"}
@@ -296,21 +296,27 @@ export const Auth: FC = memo(() => {
             </Stack>
             <Stack pt={6}>
               <Text align={"center"}>
-                {/* 既に登録をした方は
-                <Link as={RouterLink} to="/" color={"blue.400"}>
-                  こちら
-                </Link>
-                からログインしてください */}
-                <span
+                <Link
                   onClick={() => setIsLogin(!isLogin)}
                   style={{ pointerEvents: "auto", cursor: "pointer" }}
+                  _hover={{
+                    textDecoration: "none",
+                    opacity: 0.7,
+                  }}
                 >
                   　{isLogin ? "新規登録しますか?" : "ログインしますか？"}
-                </span>
+                </Link>
               </Text>
             </Stack>
           </Stack>
         </Box>
+            <Text align={"center"}>
+              共有パスをお持ちの方は
+              <Link as={RouterLink} to="/visiter" color={"blue.400"}>
+                こちら
+              </Link>
+              からプロジェクトに参加してください
+            </Text>
       </Stack>
     </Flex>
   );

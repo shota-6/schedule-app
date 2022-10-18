@@ -11,7 +11,6 @@ import {
   Input,
   InputRightElement,
 } from "@chakra-ui/react";
-import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { memo, FC, useState, useContext, useEffect } from "react";
 import { AppContext, AppContextType } from "../../../App";
 
@@ -43,9 +42,14 @@ export const createProjects = () => {
 
 // const roomMap = new Map<string, roomsProjectData>();
 
-export const ProjectCards: FC = memo(() => {
+type showPass = {
+  showPass: boolean,
+  // setShowPass: (showPass: boolean) => void,
+}
+
+export const ProjectCards: FC<showPass> = memo((props) => {
+  const { showPass } = props;
   const context: AppContextType = useContext(AppContext);
-  const [showPass, setShowPass] = useState<boolean>(false);
 
   // const [roomArr, setRoomArr] = useState<roomsProjectData[]>([]);
 
@@ -171,12 +175,6 @@ export const ProjectCards: FC = memo(() => {
                     height={8}
                   />
                   <InputRightElement h={"full"}>
-                    <Button
-                      variant={"ghost"}
-                      onClick={() => setShowPass((showPass) => !showPass)}
-                    >
-                      {showPass ? <ViewIcon /> : <ViewOffIcon />}
-                    </Button>
                   </InputRightElement>
                 </InputGroup>
 
@@ -187,16 +185,16 @@ export const ProjectCards: FC = memo(() => {
                   bg={"blue.500"}
                   color={"white"}
                   mt={6}
-                  boxShadow={
-                    "0px 1px 25px -5px rgb(66 153 225 / 48%), 0 10px 10px -5px rgb(66 153 225 / 43%)"
-                  }
+                  // boxShadow={
+                  //   "0px 1px 25px -5px rgb(66 153 225 / 48%), 0 10px 10px -5px rgb(66 153 225 / 43%)"
+                  // }
                   _hover={{
                     bg: "blue.400",
                   }}
                   _focus={{
                     bg: "blue.400",
                   }}
-                  onClick={() => {navigate(`/room/${each.projectId}`)}}
+                  onClick={() => {navigate(`/${each.projectId}/chat`)}}
                 >
                   参加
                 </Button>
