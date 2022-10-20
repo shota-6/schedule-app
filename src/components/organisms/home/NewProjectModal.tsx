@@ -1,6 +1,7 @@
 import { memo, FC, useState, useContext } from "react";
 import { auth, db } from "../../../firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { NavLink as RouterLink } from "react-router-dom";
 import {
   Button,
   FormControl,
@@ -15,6 +16,7 @@ import {
   ModalOverlay,
   Stack,
   Text,
+  Link,
   useToast,
 } from "@chakra-ui/react";
 
@@ -58,7 +60,8 @@ export const NewsProjectModal: FC<projectModalProps> = memo((props) => {
 
         await addDoc(collection(db, "rooms"), {
           projectName: context.projectName,
-          projectPass: context.projectPass,
+          // projectPass: context.projectPass,
+          projectPass: newNum,
           projectId: newNum,
           uid: uid,
           timestamp: serverTimestamp(),
@@ -102,16 +105,17 @@ export const NewsProjectModal: FC<projectModalProps> = memo((props) => {
       setCheckProjectName(false);
     }
   };
-  const handleProjectPass = (event: React.ChangeEvent<HTMLInputElement>) => {
-    context.setProjectPass(event.currentTarget.value);
-    if (event.currentTarget.value.length >= 6) {
-      setCheckProjectPass(true);
-    } else {
-      setCheckProjectPass(false);
-    }
-  };
+  // const handleProjectPass = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   context.setProjectPass(event.currentTarget.value);
+  //   if (event.currentTarget.value.length >= 6) {
+  //     setCheckProjectPass(true);
+  //   } else {
+  //     setCheckProjectPass(false);
+  //   }
+  // };
 
-  const checkCreateProject = [checkProjectName, checkProjectPass];
+  // const checkCreateProject = [checkProjectName, checkProjectPass];
+  const checkCreateProject = [checkProjectName];
 
   return (
     <Modal
@@ -144,7 +148,16 @@ export const NewsProjectModal: FC<projectModalProps> = memo((props) => {
                 }}
               />
             </FormControl>
-            <FormControl id="projectPass" isRequired>
+            <Text fontSize={"xs"} mt={4} mb={2}>
+                プロジェクトを作成完了後、自動で共有パスが割り振られます。共有パスはホーム画面にて確認できます。
+                <br />
+                プロジェクトを共有する相手は、
+                <Link as={RouterLink} to="/visiter" color={"blue.400"} fontWeight='600'>
+                  こちらから
+                </Link>
+                このパスを入力することでプロジェクトに参加できます。
+              </Text>
+            {/* <FormControl id="projectPass" isRequired>
               <FormLabel>
                 プロジェクトパス{" "}
                 <span
@@ -165,7 +178,7 @@ export const NewsProjectModal: FC<projectModalProps> = memo((props) => {
                   handleProjectPass(event);
                 }}
               />
-            </FormControl>
+            </FormControl> */}
           </Stack>
         </ModalBody>
 

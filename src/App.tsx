@@ -4,6 +4,7 @@ import theme from "./theme/theme";
 import { Router } from "./components/pages/router/Router";
 import { useState, createContext, FC, useContext } from "react";
 import { DocumentData, Timestamp } from "firebase/firestore";
+import { AuthProvider } from "./context/authContext";
 
 // const photoURL = auth.currentUser?.photoURL;
 
@@ -35,6 +36,13 @@ type todoData = {
   tid: string;
   status: string;
   timestamp: string;
+};
+
+type checkVisiterData = {
+  projectId: string;
+  projectName: string;
+  projectPass: string;
+  roomDoc: string;
 };
 
 export interface AppContextType {
@@ -88,6 +96,15 @@ export interface AppContextType {
 
   todoStatusJa: string;
   setTodoStatusJa: (todoStatusJa: string) => void;
+
+  visiterArr: checkVisiterData[];
+  setVisiterArr: (visiterArr: checkVisiterData[]) => void;
+
+  visiterDocRef: string;
+  setVisiterDocRef: (visiterDocRef: string) => void;
+
+  visiterName: string;
+  setVisiterName: (visiterName: string) => void;
 }
 
 export const AppContext = createContext<AppContextType>({
@@ -141,6 +158,15 @@ export const AppContext = createContext<AppContextType>({
 
   todoStatusJa: ``,
   setTodoStatusJa: (todoStatusJa: string) => {},
+
+  visiterArr: [],
+  setVisiterArr: (visiterArr: checkVisiterData[]) => {},
+
+  visiterDocRef: ``,
+  setVisiterDocRef: (visiterDocRef: string) => {},
+
+  visiterName: ``,
+  setVisiterName: (visiterName: string) => {},
 });
 
 const App: FC = () => {
@@ -172,6 +198,14 @@ const App: FC = () => {
 
   const [todoStatus, setTodoStatus] = useState(context.todoStatus);
   const [todoStatusJa, setTodoStatusJa] = useState(context.todoStatusJa);
+
+  const [visiterArr, setVisiterArr] = useState<checkVisiterData[]>(
+    context.visiterArr
+  );
+
+
+  const [visiterDocRef, setVisiterDocRef] = useState(context.visiterDocRef);
+  const [visiterName, setVisiterName] = useState(context.visiterName);
 
   const newContext: AppContextType = {
     nickName,
@@ -207,32 +241,42 @@ const App: FC = () => {
     chatDataArr,
     setChatDataArr,
 
-    taskName, 
+    taskName,
     setTaskName,
 
-    taskText, 
+    taskText,
     setTaskText,
 
-    taskSelect, 
+    taskSelect,
     setTaskSelect,
 
-    todoArr, 
+    todoArr,
     setTodoArr,
 
-    todoStatus, 
+    todoStatus,
     setTodoStatus,
 
-    todoStatusJa, 
+    todoStatusJa,
     setTodoStatusJa,
+
+    visiterArr,
+    setVisiterArr,
+
+    visiterDocRef,
+    setVisiterDocRef,
+
+    visiterName, 
+    setVisiterName,
   };
 
-
   return (
-    <ChakraProvider theme={theme}>
-      <AppContext.Provider value={newContext}>
-        <Router />
-      </AppContext.Provider>
-    </ChakraProvider>
+    <AuthProvider>
+      <ChakraProvider theme={theme}>
+        <AppContext.Provider value={newContext}>
+          <Router />
+        </AppContext.Provider>
+      </ChakraProvider>
+    </AuthProvider>
   );
 };
 

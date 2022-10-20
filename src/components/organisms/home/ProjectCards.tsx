@@ -163,7 +163,7 @@ export const ProjectCards: FC<showPass> = memo((props) => {
                   {each.projectName}
                 </Heading>
                 <Text mb={2} fontSize={"sm"}>
-                  プロジェクトパス
+                  共有パス
                 </Text>
                 <InputGroup>
                   <Input

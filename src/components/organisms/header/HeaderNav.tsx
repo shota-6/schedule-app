@@ -44,6 +44,7 @@ export const WithSubNavigation: FC = () => {
   //   const [name, setName] = useState<string>("");
   const auth = getAuth();
   const user = auth.currentUser;
+  const isAnonymous = user?.isAnonymous;
 
   const [userArr, setUserArr] = useState<userHeaderData[]>([]);
 
@@ -155,9 +156,13 @@ export const WithSubNavigation: FC = () => {
             fontFamily={"heading"}
             color={useColorModeValue("gray.800", "white")}
           >
-            <NavLink to="/home">
+            {isAnonymous ? (
               <Logo />
-            </NavLink>
+            ) : (
+              <NavLink to="/home">
+                <Logo />
+              </NavLink>
+            )}
           </Text>
 
           <Flex display={{ base: "none", md: "flex" }} ml={10}>
@@ -171,54 +176,32 @@ export const WithSubNavigation: FC = () => {
           direction={"row"}
           spacing={6}
         >
-          {/* <Button
-            as={RouterLink}
-            to="/"
-            p={2}
-            fontSize={"sm"}
-            fontWeight={400}
-          >
-            ログイン
-          </Button>
-
-          <Button
-            as={RouterLink}
-            to="/"
-            display={{ base: "none", md: "inline-flex" }}
-            fontSize={"sm"}
-            fontWeight={600}
-            color={"white"}
-            bg={"blue.500"}
-            _hover={{
-              bg: "blue.400",
-            }}
-          >
-            ユーザー登録
-          </Button> */}
-          <Menu>
-            <MenuButton
-              as={Button}
-              rounded={"full"}
-              variant={"link"}
-              cursor={"pointer"}
-              minW={0}
+          {isAnonymous ? (
+            <Button
+              as={RouterLink}
+              to="/"
+              display={"inline-flex"}
+              fontSize={{ base: "xs", md: "sm" }}
+              fontWeight={600}
+              color={"white"}
+              bg={"blue.500"}
+              _hover={{
+                bg: "blue.400",
+              }}
             >
-              <Avatar
-                size={"sm"}
-                src={
-                  context.file
-                    ? URL.createObjectURL(context.file)
-                    : profile
-                    ? profile?.avatarImg
-                    : ""
-                }
-              />
-            </MenuButton>
-            <MenuList alignItems={"center"}>
-              <br />
-              <Center>
+              ユーザー登録
+            </Button>
+          ) : (
+            <Menu>
+              <MenuButton
+                as={Button}
+                rounded={"full"}
+                variant={"link"}
+                cursor={"pointer"}
+                minW={0}
+              >
                 <Avatar
-                  size={"2xl"}
+                  size={"sm"}
                   src={
                     context.file
                       ? URL.createObjectURL(context.file)
@@ -227,63 +210,81 @@ export const WithSubNavigation: FC = () => {
                       : ""
                   }
                 />
-              </Center>
-              <br />
-              <Center>
-                {/* {user !== null ? <p>{user?.displayName}</p> : <p>no name</p>} */}
-                {/* {context.nickName
-                  ? context.nickName
-                  : profile
-                  ? profile.name
-                  : ""} */}
-                {userArr.map((data) => data.name)}
-              </Center>
-              <br />
-              <MenuDivider />
-              <InitialFocus />
-              <Button
-                width="100%"
-                bg="white"
-                borderRadius={0}
-                fontWeight={500}
-                onClick={handleLogout}
-              >
-                ログアウト
-              </Button>
-            </MenuList>
-          </Menu>
+              </MenuButton>
+              <MenuList alignItems={"center"}>
+                <br />
+                <Center>
+                  <Avatar
+                    size={"2xl"}
+                    src={
+                      context.file
+                        ? URL.createObjectURL(context.file)
+                        : profile
+                        ? profile?.avatarImg
+                        : ""
+                    }
+                  />
+                </Center>
+                <br />
+                <Center>
+                  {/* {user !== null ? <p>{user?.displayName}</p> : <p>no name</p>} */}
+                  {/* {context.nickName
+                          ? context.nickName
+                          : profile
+                          ? profile.name
+                          : ""} */}
+                  {userArr.map((data) => data.name)}
+                </Center>
+                <br />
+                <MenuDivider />
+                <InitialFocus />
+                <Button
+                  width="100%"
+                  bg="white"
+                  borderRadius={0}
+                  fontWeight={500}
+                  onClick={handleLogout}
+                >
+                  ログアウト
+                </Button>
+              </MenuList>
+            </Menu>
+          )}
         </Stack>
       </Flex>
 
       <Collapse in={isOpen} animateOpacity>
         <Stack spacing={4} bg="white" display={{ md: "none" }}>
           <Box>
-            <Link
-              fontWeight={600}
-              color="gray.600"
-              as={RouterLink}
-              to="/home"
-              display="block"
-              py={3}
-              px={5}
-              fontSize="sm"
-              _hover={{
-                textDecoration: "none",
-              }}
-              borderBottom="1px"
-              borderBottomColor="gray.200"
-              className={styles.activeHeaderSpNav}
-              onClick={onToggle}
-            >
-              プロジェクト一覧
-            </Link>
+            {!isAnonymous ? (
+              <Link
+                fontWeight={600}
+                color="gray.600"
+                as={RouterLink}
+                to="/home"
+                display="block"
+                py={5}
+                px={5}
+                fontSize="sm"
+                _hover={{
+                  textDecoration: "none",
+                }}
+                borderBottom="1px"
+                borderBottomColor="gray.200"
+                className={styles.activeHeaderSpNav}
+                onClick={onToggle}
+              >
+                プロジェクト一覧
+              </Link>
+            ) : null}
+
             <Link
               fontWeight={600}
               color="gray.600"
               as={RouterLink}
               to="/howto"
               display="block"
-              py={3}
+              py={5}
               px={5}
               fontSize="sm"
               _hover={{
@@ -304,25 +305,30 @@ export const WithSubNavigation: FC = () => {
 };
 
 const DesktopNav = () => {
+  const auth = getAuth();
+  const user = auth.currentUser;
+  const isAnonymous = user?.isAnonymous;
   return (
     <Stack direction={"row"} spacing={4}>
       <Box>
-        <Link
-          as={RouterLink}
-          to="/home"
-          color="gray.600"
-          p={2}
-          mr={5}
-          fontSize={"sm"}
-          fontWeight={500}
-          _hover={{
-            textDecoration: "none",
-            color: "gray.800",
-          }}
-          className={styles.activeHeaderNav}
-        >
-          プロジェクト一覧
-        </Link>
+        {!isAnonymous ? (
+          <Link
+            as={RouterLink}
+            to="/home"
+            color="gray.600"
+            p={2}
+            mr={5}
+            fontSize={"sm"}
+            fontWeight={500}
+            _hover={{
+              textDecoration: "none",
+              color: "gray.800",
+            }}
+            className={styles.activeHeaderNav}
+          >
+            プロジェクト一覧
+          </Link>
+        ) : null}
         <Link
           as={RouterLink}
           to="/howto"

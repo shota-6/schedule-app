@@ -1,6 +1,7 @@
 module.exports = {
   apiKey: "AIzaSyAFVZdMFPBv7faowdBNHPeOwIpRkZcptMI",
   authDomain: "tasks-app-d464a.firebaseapp.com",
+  databaseURL: "https://tasks-app-d464a-default-rtdb.firebaseio.com",
   projectId: "tasks-app-d464a",
   storageBucket: "tasks-app-d464a.appspot.com",
   messagingSenderId: "121130619288",

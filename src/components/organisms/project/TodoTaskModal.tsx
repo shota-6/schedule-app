@@ -47,6 +47,7 @@ export const TodoTaskModal: FC<todoModalProps> = memo((props) => {
 
   const auth = getAuth();
   const user = auth.currentUser;
+  const isAnonymous = user?.isAnonymous;
 
   const Today = new Date();
   const [startDate, setStartDate] = useState(Today);
@@ -57,29 +58,27 @@ export const TodoTaskModal: FC<todoModalProps> = memo((props) => {
   const [checkTaskSelect, setCheckTaskSelect] = useState<boolean>(false);
   const [selectValue, setSelectValue] = useState<string>("");
 
+  // TODO ID乱数
+  const createTodoId = () => {
+    const len = 15;
+    const str = "abcdefghijklmnopqrstuvwxyz0123456789";
+    const strLen = str.length;
+    let resultTodoId = "";
 
-    // TODO ID乱数
-    const createTodoId = () => {
-        const len = 15;
-        const str = "abcdefghijklmnopqrstuvwxyz0123456789";
-        const strLen = str.length;
-        let resultTodoId = "";
-    
-        for (let i = 0; i < len; i++) {
-            resultTodoId += str[Math.floor(Math.random() * strLen)];
-        }
-    
-        return resultTodoId;
-      };
-    
+    for (let i = 0; i < len; i++) {
+      resultTodoId += str[Math.floor(Math.random() * strLen)];
+    }
+
+    return resultTodoId;
+  };
 
   const getStatus = () => {
-      let result = context.todoStatus;
-      return result;
+    let result = context.todoStatus;
+    return result;
   };
   const getStatusJa = () => {
-      let result = context.todoStatusJa;
-      return result;
+    let result = context.todoStatusJa;
+    return result;
   };
 
   const createNewTask = async () => {
@@ -94,8 +93,8 @@ export const TodoTaskModal: FC<todoModalProps> = memo((props) => {
         startDate: startDate,
         endDate: endDate,
         priority: context.taskSelect,
-        name: profile?.name,
-        uid: profile?.uid,
+        name: isAnonymous ? context.visiterName : profile?.name,
+        uid: isAnonymous ? user?.uid : profile?.uid,
         tid: createTodoId(),
         status: newStatus,
         timestamp: serverTimestamp(),
@@ -107,8 +106,8 @@ export const TodoTaskModal: FC<todoModalProps> = memo((props) => {
         isClosable: true,
         position: "top",
       });
-      context.setTaskText('');
-      setSelectValue('');
+      context.setTaskText("");
+      setSelectValue("");
       setCheckTaskName(false);
       setCheckTaskSelect(false);
     } catch {
@@ -118,8 +117,8 @@ export const TodoTaskModal: FC<todoModalProps> = memo((props) => {
         isClosable: true,
         position: "top",
       });
-      context.setTaskText('');
-      setSelectValue('');
+      context.setTaskText("");
+      setSelectValue("");
       setCheckTaskName(false);
       setCheckTaskSelect(false);
     }
@@ -239,8 +238,8 @@ export const TodoTaskModal: FC<todoModalProps> = memo((props) => {
             mr={3}
             onClick={() => {
               onClose();
-              context.setTaskText('');
-              setSelectValue('');
+              context.setTaskText("");
+              setSelectValue("");
               setCheckTaskName(false);
               setCheckTaskSelect(false);
             }}

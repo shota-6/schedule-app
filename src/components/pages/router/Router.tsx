@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import { HomeUser } from "../HomeUser";
 import { HeaderLayout } from "../../template/HeaderLayout";
-import { Auth } from "../Auth";
+import { AuthPage } from "../AuthPage";
 import { LoginVisiter } from "../LoginVisiter";
 import { ProjectChat } from "../ProjectChat";
 import { SideBarLayout } from "../../template/SidebarLayout";
@@ -13,13 +13,27 @@ import { PlanList } from "../PlanList";
 import { Howto } from "../Howto";
 import { CheckVisiter } from "../CheckVisiter";
 
+import { Auth, getAuth, onAuthStateChanged } from "firebase/auth";
+const auth: Auth = getAuth();
+onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        console.log('user')
+      }
+      // ログイン時
+      else {
+          console.log('not user')
+      }
+});
+
+
 export const Router: FC = memo(() => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route index element={<Auth />} />
+        <Route index element={<AuthPage />} />
         <Route path="/visiter" element={<LoginVisiter />} />
         <Route path="/confirm" element={<CheckVisiter />} />
+
         <Route path="/" element={<HeaderLayout />}>
           <Route path="/home" element={<HomeUser />} />
           <Route path="/howto" element={<Howto />} />
@@ -30,6 +44,7 @@ export const Router: FC = memo(() => {
             <Route path="/:id/list" element={<PlanList />} />
           </Route>
         </Route>
+        
       </Routes>
     </BrowserRouter>
   );

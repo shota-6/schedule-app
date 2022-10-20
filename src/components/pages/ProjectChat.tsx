@@ -11,7 +11,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { FC, memo, useContext, useEffect, useState } from "react";
-import { useParams, Navigate } from "react-router-dom";
+import { useParams, Navigate, useLocation } from "react-router-dom";
 import { AppContext, AppContextType } from "../../App";
 import { IoSend } from "react-icons/io5";
 import { useProfile } from "../../hooks/useProfile";
@@ -43,7 +43,13 @@ export const ProjectChat: FC = memo(() => {
   const [isComposed, setIsComposed] = useState(false);
   const [sendDisable, setSendDisabled] = useState(true);
 
-  const [checkVisiterPass, setCheckVisiterPass] = useState('');
+  // const location = useLocation();
+  // const [visiterStatus, setVisiterStatus] = useState<{
+  //   visiter: boolean;
+  //   Pass: string;
+  // }>(location.state as { visiter: boolean; Pass: string });
+
+  // console.log(visiterStatus);
 
   const params = useParams();
 
@@ -55,6 +61,7 @@ export const ProjectChat: FC = memo(() => {
 
   const auth = getAuth();
   const user = auth.currentUser;
+  const isAnonymous = user?.isAnonymous;
 
   const [message, setMessage] = useState("");
 
@@ -89,9 +96,19 @@ export const ProjectChat: FC = memo(() => {
     cid: createChatId(),
   };
 
+  const VisiterChatData = {
+    message: message,
+    createdAt: serverTimestamp(),
+    name: context.visiterName,
+    uid: user?.uid,
+    cid: createChatId(),
+  };
+
+  // console.log(isAnonymous)
+
   const sendMessage = (event: any) => {
     const roomSubCollectionRef = collection(db, "rooms", rooms?.id, "chat");
-    setDoc(doc(roomSubCollectionRef), chatData);
+    setDoc(doc(roomSubCollectionRef), isAnonymous ? VisiterChatData : chatData);
     setMessage("");
     setSendDisabled(true);
     event.preventDefault();
@@ -126,37 +143,30 @@ export const ProjectChat: FC = memo(() => {
     });
   }, [rooms]);
 
-
-// Visiter
+  // Get Visiter Data
   useEffect(() => {
-    // const q = collection(db, `rooms/${rooms?.id}/chat`);
-    const q = query(
-      collection(db, "visiters")
-    );
+    const q = query(collection(db, `rooms/${rooms?.id}/visiter`));
 
-    // 通常のデータ取得
     getDocs(q)
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          const projectPass = doc.data().VisiterId ?? "";
-          setCheckVisiterPass(projectPass)
+          const visiterName = doc.data().VisiterName ?? "";
+          context.setVisiterName(visiterName);
         });
-
       })
       .catch((e) => {
         console.log(e);
       });
-  }, []);
-  
-  console.log(checkVisiterPass)
+  }, [rooms]);
 
-  // console.log(context.chatDataArr);
+  // console.log(context.visiterDocRef);
+
+  // console.log(context.visiterArr);
 
   const MessageLength = context.chatDataArr.length;
 
   if (!user) {
-    // return <Navigate replace to="/" />;
-    return <></>;
+    return <Navigate replace to="/" />;
   } else {
     return (
       <Grid
@@ -168,20 +178,6 @@ export const ProjectChat: FC = memo(() => {
         right="0"
         width={{ base: "100vw", md: "86vw" }}
       >
-        {/* <Box width={"calc( 100% - 10rem )"} pos="absolute" top="60px" right="0">
-          {context.roomArr.map((each) => (
-            <div key={each.projectId}>
-              {each.projectId === params.id ? (
-                <>
-                  <p>{each.projectName}</p>
-                  <p>{each.projectPass}</p>
-                  <p>{each.projectId}</p>
-                </>
-              ) : null}
-            </div>
-          ))}
-        </Box> */}
-
         <GridItem
           colSpan={7}
           rowSpan={1}
@@ -247,7 +243,7 @@ export const ProjectChat: FC = memo(() => {
                     rooms?.id,
                     "chat"
                   );
-                  setDoc(doc(roomSubCollectionRef), chatData);
+                  setDoc(doc(roomSubCollectionRef), isAnonymous ? VisiterChatData : chatData);
                   setMessage("");
                   setSendDisabled(true);
                   event.preventDefault();

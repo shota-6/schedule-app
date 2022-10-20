@@ -9,31 +9,17 @@ import {
   Button,
   Heading,
   Text,
-  useToast,
   InputGroup,
   InputRightElement,
 } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
-import { FC, memo, useContext, useEffect, useState } from "react";
+import { FC, memo, useContext, useState } from "react";
 import { NavLink as RouterLink, useNavigate } from "react-router-dom";
 import { AppContext, AppContextType } from "../../App";
-import { useRooms } from "../../hooks/useRooms";
-
-
-import { db } from "../../firebase";
-import {
-  addDoc,
-  collection,
-  getDocs,
-  onSnapshot,
-  query,
-  where,
-} from "firebase/firestore";
 
 export const LoginVisiter: FC = memo(() => {
   const context: AppContextType = useContext(AppContext);
   const [visiterPass, setVisiterPass] = useState<string>("");
-  const [checkVisiterPass, setCheckVisiterPass] = useState<string>("");
 
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
@@ -42,81 +28,11 @@ export const LoginVisiter: FC = memo(() => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const roomsData = useRooms();
-  const rooms = roomsData.rooms;
-
   const navigate = useNavigate();
-  const toast = useToast();
 
-  const createVisiterId = () => {
-    const len = 28;
-    const str = "abcdefghijklmnopqrstuvwxyz0123456789";
-    const strLen = str.length;
-    let resultChatId = "";
-
-    for (let i = 0; i < len; i++) {
-      resultChatId += str[Math.floor(Math.random() * strLen)];
-    }
-
-    return resultChatId;
-  };
-
-  useEffect(() => {
-    // const q = collection(db, `rooms/${rooms?.id}/chat`);
-    const q = query(
-      collection(db, "rooms"),
-      where("projectPass", "==", "test1")
-    );
-
-    // 通常のデータ取得
-    getDocs(q)
-      .then((querySnapshot) => {
-        console.log(`${querySnapshot.docs.length} accounts`); // デバッグ用
-
-        querySnapshot.forEach((doc) => {
-          const projectPass = doc.data().projectPass ?? "";
-          setCheckVisiterPass(projectPass);
-        });
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  }, [rooms]);
-
-  console.log(checkVisiterPass);
-
-  const visiterLogin = async () => {
+  const visiterLogin = () => {
     setIsLoading(true);
-
-    try {
-      if (visiterPass === checkVisiterPass) {
-        const docRef = await addDoc(collection(db, "visiters"), {
-          VisiterName: context.nickName,
-          VisiterPass: visiterPass,
-          VisiterId: createVisiterId(),
-          avatarImg: "",
-        });
-        console.log("Document written with ID: ", docRef.id);
-        toast({
-          title: `${context.nickName}さん、こんにちは`,
-          status: "success",
-          isClosable: true,
-          position: "top",
-        });
-        navigate("/confirm");
-      } else {
-        toast({
-          title: `入力した共有パスは存在しません。`,
-          status: "error",
-          isClosable: true,
-          position: "top",
-        });
-        setIsLoading(false);
-      }
-    } catch (e) {
-      console.error("Error adding document: ", e);
-      setIsLoading(false);
-    }
+    navigate("/confirm", { state: { Pass: visiterPass } });
   };
 
   // console.log(context.roomArr);

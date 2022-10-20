@@ -8,6 +8,9 @@
 .fc .fc-toolbar-title {
   font-weight: bold;
 }
+.fc-list-event-time{
+  display: none;
+}
 @media screen and (max-width: 767px) {
   .fc .fc-toolbar-title {
     font-size: 1.25em;

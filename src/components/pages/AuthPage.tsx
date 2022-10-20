@@ -5,7 +5,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import {
   Flex,
   Box,
@@ -26,7 +26,17 @@ import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { NavLink as RouterLink } from "react-router-dom";
 import { AppContext, AppContextType } from "../../App";
 
-export const Auth: FC = memo(() => {
+import {
+  getAuth,
+  setPersistence,
+  browserLocalPersistence,
+  browserSessionPersistence,
+  inMemoryPersistence,
+  onAuthStateChanged
+} from "firebase/auth";
+
+
+export const AuthPage: FC = memo(() => {
   const context: AppContextType = useContext(AppContext);
   // console.log(context.nickName)
 
@@ -35,7 +45,7 @@ export const Auth: FC = memo(() => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
-  const [isLogin, setIsLogin] = useState<boolean>(true);
+  const [isLogin, setIsLogin] = useState<boolean>(false);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -46,10 +56,17 @@ export const Auth: FC = memo(() => {
   const navigate = useNavigate();
   const toast = useToast();
 
-  
+
+
+
+
+  const auth = getAuth()
+  const user = auth.currentUser;
+  const isAnonymous = user?.isAnonymous;
 
   const Register = async () => {
     setIsLoading(true);
+    await setPersistence(auth, browserLocalPersistence);
     await createUserWithEmailAndPassword(auth, email, password)
       // updateProfile(user, {
       //   displayName: "Jane Q. User", photoURL: "https://example.com/jane-q-user/profile.jpg"
@@ -59,8 +76,8 @@ export const Auth: FC = memo(() => {
         navigate("/home");
       })
       .then(() => {
-        if (auth.currentUser !== null) {
-          updateProfile(auth.currentUser, {
+        if (user !== null) {
+          updateProfile(user, {
             displayName: context.nickName,
           });
         }
@@ -74,6 +91,7 @@ export const Auth: FC = memo(() => {
           position: "top",
         });
         console.error(error);
+        setIsLoading(false);
       });
 
     try {
@@ -193,131 +211,138 @@ export const Auth: FC = memo(() => {
   //     console.error("Error adding document: ", e);
   //   }
   // }
+  
 
-  return (
-    <Flex
-      minH={"100vh"}
-      align={"center"}
-      justify={"center"}
-      bg="gray.50"
-    >
-      <Stack spacing={8} mx={"auto"} w={'xl'} py={12} px={6}>
-        <Stack align={"center"}>
-          <Heading fontSize={"3xl"} textAlign={"center"}>
-            {isLogin ? "ログイン" : "新規登録"}
-          </Heading>
-          <Text fontSize={"lg"} color={"gray.600"} align={"center"}>
-            {isLogin
-              ? "既に登録済みの方はこちらからログインしてください。"
-              : "ユーザー登録を行うと、プロジェクトの作成や共有の機能が使用できるようになります。"}
-          </Text>
-        </Stack>
-        <Box
-          rounded={"lg"}
-          bg="white"
-          boxShadow={"lg"}
-          p={8}
-        >
-          <Stack spacing={4}>
-            {isLogin ? (
-              ""
-            ) : (
-              <FormControl id="nickName" isRequired>
-                <FormLabel>ニックネーム</FormLabel>
+  if (user && !isAnonymous) {
+    return <Navigate replace to="/home" />;
+  } else {
+    return (
+      <Flex
+        minH={"100vh"}
+        align={"center"}
+        justify={"center"}
+        bg="gray.50"
+      >
+        <Stack spacing={8} mx={"auto"} w={'xl'} py={12} px={6}>
+          <Stack align={"center"}>
+            <Heading fontSize={"3xl"} textAlign={"center"}>
+              {isLogin ? "ログイン" : "新規登録"}
+            </Heading>
+            <Text fontSize={"lg"} color={"gray.600"} align={"center"}>
+              {isLogin
+                ? "既に登録済みの方はこちらからログインしてください。"
+                : "ユーザー登録を行うと、プロジェクトの作成や共有の機能が使用できるようになります。"}
+            </Text>
+          </Stack>
+          <Box
+            rounded={"lg"}
+            bg="white"
+            boxShadow={"lg"}
+            p={8}
+          >
+            <Stack spacing={4}>
+              {isLogin ? (
+                ""
+              ) : (
+                <FormControl id="nickName" isRequired>
+                  <FormLabel>ニックネーム</FormLabel>
+                  <Input
+                    name="name"
+                    type="text"
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                      handleChangeName(event);
+                    }}
+                  />
+                </FormControl>
+              )}
+  
+              <FormControl id="email" isRequired>
+                <FormLabel>メールアドレス</FormLabel>
                 <Input
-                  name="name"
-                  type="text"
+                  name="email"
+                  type="email"
                   onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                    handleChangeName(event);
+                    handleChangeEmail(event);
                   }}
                 />
               </FormControl>
-            )}
-
-            <FormControl id="email" isRequired>
-              <FormLabel>メールアドレス</FormLabel>
-              <Input
-                name="email"
-                type="email"
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                  handleChangeEmail(event);
-                }}
-              />
-            </FormControl>
-            <FormControl id="password" isRequired>
-              <FormLabel>
-                パスワード
-                <span
-                  style={{ fontSize: "14px", verticalAlign: "text-bottom" }}
-                >
-                  (6文字以上)
-                </span>
-              </FormLabel>
-              <InputGroup>
-                <Input
-                  name="password"
-                  type={showPassword ? "text" : "password"}
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                    handleChangePassword(event);
-                  }}
-                />
-                <InputRightElement h={"full"}>
-                  <Button
-                    variant={"ghost"}
-                    onClick={() =>
-                      setShowPassword((showPassword) => !showPassword)
-                    }
+              <FormControl id="password" isRequired>
+                <FormLabel>
+                  パスワード
+                  <span
+                    style={{ fontSize: "14px", verticalAlign: "text-bottom" }}
                   >
-                    {showPassword ? <ViewIcon /> : <ViewOffIcon />}
-                  </Button>
-                </InputRightElement>
-              </InputGroup>
-            </FormControl>
-            <Stack spacing={10} pt={2}>
-              <Button
-                type="button"
-                loadingText={isLogin ? "ログイン中" : "登録中"}
-                size="lg"
-                bg={"blue.400"}
-                color={"white"}
-                _hover={{
-                  bg: "blue.500",
-                }}
-                onClick={isLogin ? Login : Register}
-                isLoading={isLoading}
-                disabled={
-                  isLogin
-                    ? checkLogin.some((ok) => !ok)
-                    : checkRegister.some((ok) => !ok)
-                }
-              >
-                {isLogin ? "ログイン" : "新規登録"}
-              </Button>
-            </Stack>
-            <Stack pt={6}>
-              <Text align={"center"}>
-                <Link
-                  onClick={() => setIsLogin(!isLogin)}
-                  style={{ pointerEvents: "auto", cursor: "pointer" }}
+                    (6文字以上)
+                  </span>
+                </FormLabel>
+                <InputGroup>
+                  <Input
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                      handleChangePassword(event);
+                    }}
+                  />
+                  <InputRightElement h={"full"}>
+                    <Button
+                      variant={"ghost"}
+                      onClick={() =>
+                        setShowPassword((showPassword) => !showPassword)
+                      }
+                    >
+                      {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                    </Button>
+                  </InputRightElement>
+                </InputGroup>
+              </FormControl>
+              <Stack spacing={10} pt={2}>
+                <Button
+                  type="button"
+                  loadingText={isLogin ? "ログイン中" : "登録中"}
+                  size="lg"
+                  bg={"blue.400"}
+                  color={"white"}
                   _hover={{
-                    textDecoration: "none",
-                    opacity: 0.7,
+                    bg: "blue.500",
                   }}
+                  onClick={isLogin ? Login : Register}
+                  isLoading={isLoading}
+                  disabled={
+                    isLogin
+                      ? checkLogin.some((ok) => !ok)
+                      : checkRegister.some((ok) => !ok)
+                  }
                 >
-                  　{isLogin ? "新規登録しますか?" : "ログインしますか？"}
-                </Link>
-              </Text>
+                  {isLogin ? "ログイン" : "新規登録"}
+                </Button>
+              </Stack>
+              <Stack pt={6}>
+                <Text align={"center"}>
+                  <Link
+                    onClick={() => setIsLogin(!isLogin)}
+                    style={{ pointerEvents: "auto", cursor: "pointer" }}
+                    _hover={{
+                      textDecoration: "none",
+                      opacity: 0.7,
+                    }}
+                  >
+                    　{isLogin ? "新規登録しますか?" : "ログインしますか？"}
+                  </Link>
+                </Text>
+              </Stack>
             </Stack>
-          </Stack>
-        </Box>
-            <Text align={"center"}>
-              共有パスをお持ちの方は
-              <Link as={RouterLink} to="/visiter" color={"blue.400"}>
-                こちら
-              </Link>
-              からプロジェクトに参加してください
-            </Text>
-      </Stack>
-    </Flex>
-  );
+          </Box>
+              <Text align={"center"}>
+                共有パスをお持ちの方は
+                <Link as={RouterLink} to="/visiter" color={"blue.400"}>
+                  こちら
+                </Link>
+                からプロジェクトに参加してください
+              </Text>
+        </Stack>
+      </Flex>
+    );
+
+  }
+
 });

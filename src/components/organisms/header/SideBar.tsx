@@ -25,10 +25,15 @@ import { RiTodoLine } from "react-icons/ri";
 import { AppContext, AppContextType } from "../../../App";
 
 import styles from "../../../theme/Theme.module.scss";
+import { getAuth } from "firebase/auth";
 
 export const SideBar: FC = memo(() => {
   const context: AppContextType = useContext(AppContext);
   const params = useParams();
+
+  const auth = getAuth();
+  const user = auth.currentUser;
+  const isAnonymous = user?.isAnonymous;
 
   return (
     <Grid
@@ -57,37 +62,39 @@ export const SideBar: FC = memo(() => {
           borderTopColor={{ base: "gray.200", md: "none" }}
           height={{ base: "100%", md: "inherit" }}
         >
-          <Link
-            fontWeight={600}
-            color="gray.600"
-            as={RouterLink}
-            to="/home"
-            display={{ base: "flex", md: "block" }}
-            alignItems={{ base: "center", md: "inherit" }}
-            py={3}
-            px={5}
-            _hover={{
-              textDecoration: "none",
-              backgroundColor: "blue.500",
-              color: "white",
-            }}
-          >
-            <Flex alignItems="center">
-              <Icon
-                as={IoHomeOutline}
-                mr={{ base: 0, md: 2 }}
-                w={{ base: 5, md: 4, lg: 5 }}
-                h={{ base: 5, md: 4, lg: 5 }}
-              />
-              <Text
-                display={{ base: "none", md: "inherit" }}
-                fontSize={{ base: "sm", md: "xs", lg: "md" }}
-                whiteSpace="nowrap"
-              >
-                ホーム
-              </Text>
-            </Flex>
-          </Link>
+          {isAnonymous ? null : (
+            <Link
+              fontWeight={600}
+              color="gray.600"
+              as={RouterLink}
+              to="/home"
+              display={{ base: "flex", md: "block" }}
+              alignItems={{ base: "center", md: "inherit" }}
+              py={3}
+              px={5}
+              _hover={{
+                textDecoration: "none",
+                backgroundColor: "blue.500",
+                color: "white",
+              }}
+            >
+              <Flex alignItems="center">
+                <Icon
+                  as={IoHomeOutline}
+                  mr={{ base: 0, md: 2 }}
+                  w={{ base: 5, md: 4, lg: 5 }}
+                  h={{ base: 5, md: 4, lg: 5 }}
+                />
+                <Text
+                  display={{ base: "none", md: "inherit" }}
+                  fontSize={{ base: "sm", md: "xs", lg: "md" }}
+                  whiteSpace="nowrap"
+                >
+                  ホーム
+                </Text>
+              </Flex>
+            </Link>
+          )}
 
           <Link
             fontWeight={600}
@@ -187,7 +194,6 @@ export const SideBar: FC = memo(() => {
               </Text>
             </Flex>
           </Link>
-
 
           <Link
             fontWeight={600}
