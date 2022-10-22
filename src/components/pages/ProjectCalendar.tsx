@@ -1,8 +1,6 @@
-import { Flex, Grid, GridItem, Heading } from "@chakra-ui/react";
-import { FC, memo, useContext } from "react";
+import { Flex, Grid, GridItem, Heading, Skeleton } from "@chakra-ui/react";
+import { FC, memo, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import { AppContext, AppContextType } from "../../App";
-import { useProfile } from "../../hooks/useProfile";
 import { useRooms } from "../../hooks/useRooms";
 import { useCalendar } from "../../hooks/useCalendar";
 
@@ -13,24 +11,25 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import allLocales from "@fullcalendar/core/locales-all";
 
-import '../../theme/fullCalendar.css'
-
+import "../../theme/fullCalendar.css";
 
 export const ProjectCalendar: FC = memo(() => {
-  const context: AppContextType = useContext(AppContext);
-
   const roomsData = useRooms();
   const rooms = roomsData.rooms;
 
   const calendarData = useCalendar();
   const calendar = calendarData.calendarData;
 
-  const profileData = useProfile();
-  const profile = profileData.profile;
-
   const auth = getAuth();
   const user = auth.currentUser;
 
+  const [loadSkeleton, setLoadSkeleton] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoadSkeleton(false);
+    }, 1000);
+  }, []);
 
   if (!user) {
     return <Navigate replace to="/" />;
@@ -55,22 +54,26 @@ export const ProjectCalendar: FC = memo(() => {
           borderBottomColor="gray.200"
         >
           <Flex height="100%" alignItems="center">
-            <Heading as="h2" fontSize="lg">
-              {rooms?.projectName}
+            <Heading as="h2" fontSize="lg" width="100%">
+              <Skeleton isLoaded={!loadSkeleton} fadeDuration={1}>
+                {rooms?.projectName}
+              </Skeleton>
             </Heading>
           </Flex>
         </GridItem>
 
         <GridItem colSpan={7} rowSpan={14} p={5}>
-          <FullCalendar
-            height="auto"
-            plugins={[dayGridPlugin]}
-            initialView="dayGridMonth"
-            locales={allLocales}
-            locale="ja"
-            buttonText={{ today: "今月" }}
-            events={calendar}
-          />
+          <Skeleton isLoaded={!loadSkeleton} fadeDuration={1}>
+            <FullCalendar
+              height="auto"
+              plugins={[dayGridPlugin]}
+              initialView="dayGridMonth"
+              locales={allLocales}
+              locale="ja"
+              buttonText={{ today: "今月" }}
+              events={calendar}
+            />
+          </Skeleton>
         </GridItem>
       </Grid>
     );

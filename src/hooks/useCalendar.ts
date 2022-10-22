@@ -17,8 +17,7 @@ export const useCalendar = () => {
   const rooms = roomsData.rooms;
 
   useEffect(() => {
-    const q = query(collection(db, `rooms/${rooms?.id}/todo`));
-
+    const q = query(collection(db, `rooms/${rooms?.id}/todos`));
     // リアルタイムのデータ取得
     onSnapshot(q, (querySnapshot) => {
       const result: any[] = [];
@@ -37,5 +36,6 @@ export const useCalendar = () => {
       setCalendarData(result);
     });
   }, [rooms]);
+
   return { calendarData };
 };

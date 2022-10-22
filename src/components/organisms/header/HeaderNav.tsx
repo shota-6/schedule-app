@@ -211,7 +211,7 @@ export const WithSubNavigation: FC = () => {
                   }
                 />
               </MenuButton>
-              <MenuList alignItems={"center"}>
+              <MenuList alignItems={"center"} pb={0}>
                 <br />
                 <Center>
                   <Avatar
@@ -236,7 +236,7 @@ export const WithSubNavigation: FC = () => {
                   {userArr.map((data) => data.name)}
                 </Center>
                 <br />
-                <MenuDivider />
+                <MenuDivider mb={0}/>
                 <InitialFocus />
                 <Button
                   width="100%"
@@ -244,6 +244,7 @@ export const WithSubNavigation: FC = () => {
                   borderRadius={0}
                   fontWeight={500}
                   onClick={handleLogout}
+                  py={3}
                 >
                   ログアウト
                 </Button>

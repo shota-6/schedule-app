@@ -28,7 +28,7 @@ export const HomeUser: FC = memo(() => {
             top={{ base: 20, md: 20, lg: 24 }}
             left={{ base: 4, md: 8, lg: 12 }}
           >
-            <Text mr={2}>{showPass ? 'パスを非表示' : 'パスを表示'}</Text>
+            <Text mr={2}>{showPass ? "パスを非表示" : "パスを表示"}</Text>
             {showPass ? <ViewIcon /> : <ViewOffIcon />}
           </Button>
           <Button

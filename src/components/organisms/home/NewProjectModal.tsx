@@ -56,12 +56,13 @@ export const NewsProjectModal: FC<projectModalProps> = memo((props) => {
         const uid = auth.currentUser.uid;
 
         const newNum = createProjectId();
+        const newPass = createProjectId();
         // context.setProjectId(newNum);
 
         await addDoc(collection(db, "rooms"), {
           projectName: context.projectName,
           // projectPass: context.projectPass,
-          projectPass: newNum,
+          projectPass: newPass,
           projectId: newNum,
           uid: uid,
           timestamp: serverTimestamp(),
@@ -149,14 +150,19 @@ export const NewsProjectModal: FC<projectModalProps> = memo((props) => {
               />
             </FormControl>
             <Text fontSize={"xs"} mt={4} mb={2}>
-                プロジェクトを作成完了後、自動で共有パスが割り振られます。共有パスはホーム画面にて確認できます。
-                <br />
-                プロジェクトを共有する相手は、
-                <Link as={RouterLink} to="/visiter" color={"blue.400"} fontWeight='600'>
-                  こちらから
-                </Link>
-                このパスを入力することでプロジェクトに参加できます。
-              </Text>
+              プロジェクトを作成完了後、自動で共有パスが割り振られます。共有パスはホーム画面にて確認できます。
+              <br />
+              プロジェクトを共有する相手は、
+              <Link
+                as={RouterLink}
+                to="/visiter"
+                color={"blue.400"}
+                fontWeight="600"
+              >
+                こちらから
+              </Link>
+              このパスを入力することでプロジェクトに参加できます。
+            </Text>
             {/* <FormControl id="projectPass" isRequired>
               <FormLabel>
                 プロジェクトパス{" "}

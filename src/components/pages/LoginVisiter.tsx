@@ -104,7 +104,15 @@ export const LoginVisiter: FC = memo(() => {
                     <Link color={"blue.400"}>Forgot password?</Link> */}
                 <Text fontSize={"md"} color={"gray.600"}>
                   プロジェクトを作成する場合は、
-                  <Link as={RouterLink} to="/" color={"blue.400"}>
+                  <Link
+                    as={RouterLink}
+                    to="/"
+                    color={"blue.400"}
+                    _hover={{
+                      textDecoration: "none",
+                      opacity: 0.7,
+                    }}
+                  >
                     ユーザー登録
                   </Link>
                   してください。

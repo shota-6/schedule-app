@@ -3,11 +3,11 @@ import {
   Flex,
   Stack,
   Text,
+  Skeleton,
+  SkeletonCircle,
 } from "@chakra-ui/react";
 import { getAuth } from "firebase/auth";
-import { FC, memo, useContext, useEffect, useRef } from "react";
-import { AppContext, AppContextType } from "../../../App";
-import { useProfile } from "../../../hooks/useProfile";
+import { FC, memo, useEffect, useRef } from "react";
 
 interface chatMessageProps {
   message: string;
@@ -18,19 +18,15 @@ interface chatMessageProps {
   cid: string;
   key: string;
   isLastItem: boolean;
+  loadSkeleton: boolean;
 }
 
 export const ChatMessage: FC<chatMessageProps> = memo(
-  ({ isLastItem, ...data }) => {
-    const context: AppContextType = useContext(AppContext);
-
-    const profileData = useProfile();
-    const profile = profileData.profile;
+  ({ loadSkeleton, isLastItem, ...data }) => {
     const ref = useRef<HTMLDivElement>(null);
 
     const auth = getAuth();
     const user = auth.currentUser;
-    const isAnonymous = user?.isAnonymous;
 
     useEffect(() => {
       if (isLastItem && ref.current) {
@@ -51,21 +47,50 @@ export const ChatMessage: FC<chatMessageProps> = memo(
           user?.uid === data.uid ? "gray.50" : "blue.100"
         }
       >
-        <Avatar size={"sm"} mr={5} src={data.AvatarImg} />
+        {loadSkeleton ? (
+          <SkeletonCircle size="8" mr={5} />
+        ) : (
+          <Avatar size={"sm"} mr={5} src={data.AvatarImg} />
+        )}
+
         <Stack spacing={3} mt={1}>
-          <Text fontSize={{ base: "sm", md: "md" }} fontWeight={600}>
-            {data.name}
-          </Text>
-          <Text fontSize={{ base: "sm", md: "md" }}>{data.message}</Text>
+          {loadSkeleton ? (
+            <Skeleton fadeDuration={1}>
+              <Text fontSize={{ base: "sm", md: "md" }} width="15vw">
+                Skeleton
+              </Text>
+            </Skeleton>
+          ) : (
+            <Text fontSize={{ base: "sm", md: "md" }} fontWeight={600}>
+              {data.name}
+            </Text>
+          )}
+
+          {loadSkeleton ? (
+            <Skeleton fadeDuration={1}>
+              <Text fontSize={{ base: "sm", md: "md" }}>Skeleton</Text>
+            </Skeleton>
+          ) : (
+            <Text fontSize={{ base: "sm", md: "md" }}>{data.message}</Text>
+          )}
         </Stack>
-        <Text
-          fontSize={{ base: "10px", md: "12px" }}
-          pos={"absolute"}
-          right={5}
-          top={7}
-        >
-          {data.createdAt}
-        </Text>
+
+        {loadSkeleton ? (
+          <Skeleton pos={"absolute"} right={5} top={7} fadeDuration={1}>
+            <Text fontSize={{ base: "10px", md: "12px" }}>
+              2000年00月00日 00:00
+            </Text>
+          </Skeleton>
+        ) : (
+          <Text
+            fontSize={{ base: "10px", md: "12px" }}
+            pos={"absolute"}
+            right={5}
+            top={7}
+          >
+            {data.createdAt}
+          </Text>
+        )}
       </Flex>
     );
   }

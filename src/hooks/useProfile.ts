@@ -18,14 +18,11 @@ export const useProfile = () => {
       if (user) {
         const userUid = user.uid;
 
-        const q = query(
-          collection(db, "users"),
-          where("uid", "==", userUid)
-        );
+        const q = query(collection(db, "users"), where("uid", "==", userUid));
         const querySnapshot = await getDocs(q);
         querySnapshot.forEach((doc) => {
           const docData = doc.data();
-          docData.id = doc.id
+          docData.id = doc.id;
           setProfile(docData);
         });
       }

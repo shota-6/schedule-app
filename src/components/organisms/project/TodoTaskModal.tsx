@@ -1,4 +1,4 @@
-import { FC, memo, useContext, useState } from "react";
+import { FC, memo, useContext, useEffect, useState } from "react";
 
 import {
   Button,
@@ -18,7 +18,14 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { getAuth } from "firebase/auth";
-import { collection, setDoc, doc, serverTimestamp } from "firebase/firestore";
+import {
+  collection,
+  setDoc,
+  doc,
+  serverTimestamp,
+  query,
+  getDocs,
+} from "firebase/firestore";
 import { db } from "../../../firebase";
 import { AppContext, AppContextType } from "../../../App";
 import { useProfile } from "../../../hooks/useProfile";
@@ -83,7 +90,7 @@ export const TodoTaskModal: FC<todoModalProps> = memo((props) => {
 
   const createNewTask = async () => {
     try {
-      const todoSubCollectionRef = collection(db, "rooms", rooms?.id, "todo");
+      const todoSubCollectionRef = collection(db, "rooms", rooms?.id, "todos");
 
       const newStatus = getStatus();
 
@@ -150,6 +157,22 @@ export const TodoTaskModal: FC<todoModalProps> = memo((props) => {
   };
 
   const checkCreateTask = [checkTaskName, checkTaskSelect];
+
+  // Get Visiter Data
+  useEffect(() => {
+    const q = query(collection(db, `rooms/${rooms?.id}/visiters`));
+
+    getDocs(q)
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          const visiterName = doc.data().VisiterName ?? "";
+          context.setVisiterName(visiterName);
+        });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, [rooms]);
 
   return (
     <Modal

@@ -3,7 +3,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import theme from "./theme/theme";
 import { Router } from "./components/pages/router/Router";
 import { useState, createContext, FC, useContext } from "react";
-import { DocumentData, Timestamp } from "firebase/firestore";
+import { DocumentData } from "firebase/firestore";
 import { AuthProvider } from "./context/authContext";
 
 // const photoURL = auth.currentUser?.photoURL;

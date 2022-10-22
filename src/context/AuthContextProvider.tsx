@@ -6,10 +6,10 @@ import { getAuth } from "firebase/auth";
  */
 type AuthInfo = {
   userId: string;
-}; 
+};
 const auth = getAuth();
 const user = auth.currentUser;
-console.log(user?.uid)
+console.log(user?.uid);
 // ログイン状態のContext
 export const LoggedInContext = React.createContext<boolean>(false);
 
@@ -24,25 +24,23 @@ export const AuthInfoContext = React.createContext<
  * 取得できない場合は空の情報を返す
  * @returns
  */
- function getDefaultAuthInfo(): AuthInfo {
-    const defaultAuthInfo = window.localStorage.getItem("authInfo");
-    if (defaultAuthInfo) {
-      return JSON.parse(defaultAuthInfo) as AuthInfo;
-    } else {
-      return { userId: "" };
-    }
+function getDefaultAuthInfo(): AuthInfo {
+  const defaultAuthInfo = window.localStorage.getItem("authInfo");
+  if (defaultAuthInfo) {
+    return JSON.parse(defaultAuthInfo) as AuthInfo;
+  } else {
+    return { userId: "" };
   }
-  
-  /**
-   * 認証情報をローカルストレージに追加
-   * @param authInfo
-   */
-  function setAutoInfoToLocalStorage(authInfo: AuthInfo): void {
-    const authInfoStringfy = JSON.stringify(authInfo);
-    window.localStorage.setItem("authInfo", authInfoStringfy);
-  }
-  
+}
 
+/**
+ * 認証情報をローカルストレージに追加
+ * @param authInfo
+ */
+function setAutoInfoToLocalStorage(authInfo: AuthInfo): void {
+  const authInfoStringfy = JSON.stringify(authInfo);
+  window.localStorage.setItem("authInfo", authInfoStringfy);
+}
 
 /**
  * コンテキストのProvider
@@ -52,8 +50,8 @@ export const AuthContextProvider: React.FC<{}> = (props) => {
   const [loggedIn, setLoggedIn] = useState<boolean>(false);
   const [authInfo, setAuthInfo] = useState<AuthInfo>(getDefaultAuthInfo());
 
-  console.log(loggedIn)
-  console.log(authInfo)
+  console.log(loggedIn);
+  console.log(authInfo);
 
   // authInfoのバリデーション
   useEffect(() => {

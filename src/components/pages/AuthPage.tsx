@@ -1,11 +1,11 @@
-import { auth, db } from "../../firebase";
+import { db } from "../../firebase";
 import { collection, addDoc } from "firebase/firestore";
 import {
   updateProfile,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import {
   Flex,
   Box,
@@ -30,11 +30,7 @@ import {
   getAuth,
   setPersistence,
   browserLocalPersistence,
-  browserSessionPersistence,
-  inMemoryPersistence,
-  onAuthStateChanged
 } from "firebase/auth";
-
 
 export const AuthPage: FC = memo(() => {
   const context: AppContextType = useContext(AppContext);
@@ -56,11 +52,7 @@ export const AuthPage: FC = memo(() => {
   const navigate = useNavigate();
   const toast = useToast();
 
-
-
-
-
-  const auth = getAuth()
+  const auth = getAuth();
   const user = auth.currentUser;
   const isAnonymous = user?.isAnonymous;
 
@@ -211,19 +203,13 @@ export const AuthPage: FC = memo(() => {
   //     console.error("Error adding document: ", e);
   //   }
   // }
-  
 
   if (user && !isAnonymous) {
     return <Navigate replace to="/home" />;
   } else {
     return (
-      <Flex
-        minH={"100vh"}
-        align={"center"}
-        justify={"center"}
-        bg="gray.50"
-      >
-        <Stack spacing={8} mx={"auto"} w={'xl'} py={12} px={6}>
+      <Flex minH={"100vh"} align={"center"} justify={"center"} bg="gray.50">
+        <Stack spacing={8} mx={"auto"} w={"xl"} py={12} px={6}>
           <Stack align={"center"}>
             <Heading fontSize={"3xl"} textAlign={"center"}>
               {isLogin ? "ログイン" : "新規登録"}
@@ -234,12 +220,7 @@ export const AuthPage: FC = memo(() => {
                 : "ユーザー登録を行うと、プロジェクトの作成や共有の機能が使用できるようになります。"}
             </Text>
           </Stack>
-          <Box
-            rounded={"lg"}
-            bg="white"
-            boxShadow={"lg"}
-            p={8}
-          >
+          <Box rounded={"lg"} bg="white" boxShadow={"lg"} p={8}>
             <Stack spacing={4}>
               {isLogin ? (
                 ""
@@ -255,7 +236,7 @@ export const AuthPage: FC = memo(() => {
                   />
                 </FormControl>
               )}
-  
+
               <FormControl id="email" isRequired>
                 <FormLabel>メールアドレス</FormLabel>
                 <Input
@@ -321,6 +302,7 @@ export const AuthPage: FC = memo(() => {
                   <Link
                     onClick={() => setIsLogin(!isLogin)}
                     style={{ pointerEvents: "auto", cursor: "pointer" }}
+                    color={"blue.400"}
                     _hover={{
                       textDecoration: "none",
                       opacity: 0.7,
@@ -332,17 +314,23 @@ export const AuthPage: FC = memo(() => {
               </Stack>
             </Stack>
           </Box>
-              <Text align={"center"}>
-                共有パスをお持ちの方は
-                <Link as={RouterLink} to="/visiter" color={"blue.400"}>
-                  こちら
-                </Link>
-                からプロジェクトに参加してください
-              </Text>
+          <Text align={"center"}>
+            共有パスをお持ちの方は
+            <Link
+              as={RouterLink}
+              to="/visiter"
+              color={"blue.400"}
+              _hover={{
+                textDecoration: "none",
+                opacity: 0.7,
+              }}
+            >
+              こちら
+            </Link>
+            からプロジェクトに参加してください
+          </Text>
         </Stack>
       </Flex>
     );
-
   }
-
 });

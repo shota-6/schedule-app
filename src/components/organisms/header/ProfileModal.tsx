@@ -15,31 +15,18 @@ import {
   Center,
   Avatar,
   Stack,
-  AvatarBadge,
   IconButton,
   useToast,
 } from "@chakra-ui/react";
 import { SmallCloseIcon } from "@chakra-ui/icons";
 
-import { auth, db, storage } from "../../../firebase";
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  getDocs,
-  query,
-  where,
-  updateDoc,
-  setDoc,
-  doc,
-} from "firebase/firestore";
+import { db, storage } from "../../../firebase";
+import { updateDoc, doc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
-import { getAuth, updateProfile } from "firebase/auth";
 import { AppContext, AppContextType } from "../../../App";
 
 import { ImagePreview } from "./ImagePreview";
-import { useUser } from "../../../hooks/useAuth";
 import { useProfile } from "../../../hooks/useProfile";
 import * as CSS from "csstype";
 
@@ -50,10 +37,6 @@ export const InitialFocus: FC = () => {
   const finalRef = React.useRef(null);
 
   const context: AppContextType = useContext(AppContext);
-  const auth = getAuth();
-  const user = auth.currentUser;
-
-  const { userAuth } = useUser();
   const toast = useToast();
 
   //   image preview
@@ -84,8 +67,6 @@ export const InitialFocus: FC = () => {
     try {
       setLoading(true);
       const storageRef = ref(storage, context.file?.name);
-      const uid = userAuth?.uid;
-      const docRef = collection(db, "users");
 
       //   if (user !== null) {
       //     updateProfile(user, {
@@ -190,6 +171,7 @@ export const InitialFocus: FC = () => {
         borderRadius={0}
         onClick={onOpen}
         fontWeight={500}
+        py={3}
       >
         プロフィール編集
       </Button>

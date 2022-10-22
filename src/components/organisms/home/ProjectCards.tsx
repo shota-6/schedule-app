@@ -1,5 +1,4 @@
 import {
-  Avatar,
   Box,
   Button,
   Center,
@@ -10,18 +9,17 @@ import {
   InputGroup,
   Input,
   InputRightElement,
+  Spinner,
 } from "@chakra-ui/react";
-import { memo, FC, useState, useContext, useEffect } from "react";
+import { memo, FC, useContext, useEffect, useState } from "react";
 import { AppContext, AppContextType } from "../../../App";
 
 import {
   query,
   collection,
   where,
-  getDocs,
   onSnapshot,
   orderBy,
-  limit,
 } from "firebase/firestore";
 import { db } from "../../../firebase";
 import { getAuth } from "firebase/auth";
@@ -43,16 +41,15 @@ export const createProjects = () => {
 // const roomMap = new Map<string, roomsProjectData>();
 
 type showPass = {
-  showPass: boolean,
+  showPass: boolean;
   // setShowPass: (showPass: boolean) => void,
-}
+};
 
 export const ProjectCards: FC<showPass> = memo((props) => {
   const { showPass } = props;
   const context: AppContextType = useContext(AppContext);
-
+  const [loadSkeleton, setLoadSkeleton] = useState(true);
   // const [roomArr, setRoomArr] = useState<roomsProjectData[]>([]);
-
   // const roomsData = useRooms();
   // const rooms = roomsData.roomsInfo;
 
@@ -108,11 +105,12 @@ export const ProjectCards: FC<showPass> = memo((props) => {
           result.push(roomArr);
         });
         context.setRoomArr(result);
+        setTimeout(() => {
+          setLoadSkeleton(false);
+        }, 1000);
       });
     }
   }, []);
-
-
 
   const noData: CSS.Properties = {
     display: "flex",
@@ -124,7 +122,18 @@ export const ProjectCards: FC<showPass> = memo((props) => {
   };
 
   if (context.roomArr.length) {
-    return (
+    return loadSkeleton ? (
+      <Spinner
+        thickness="4px"
+        speed="0.65s"
+        emptyColor="gray.200"
+        color="blue.500"
+        size="xl"
+        top="50vh"
+        left="50vw"
+        pos="absolute"
+      />
+    ) : (
       <Grid
         templateColumns={{
           base: "repeat(2, 1fr)",
@@ -149,12 +158,12 @@ export const ProjectCards: FC<showPass> = memo((props) => {
                 textAlign={"center"}
               >
                 {/* <Avatar
-                  size={"xl"}
-                  src={
-                    "https://images.unsplash.com/photo-1520810627419-35e362c5dc07?ixlib=rb-1.2.1&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&ixid=eyJhcHBfaWQiOjE3Nzg0fQ"
-                  }
-                  mb={8}
-                /> */}
+              size={"xl"}
+              src={
+                "https://images.unsplash.com/photo-1520810627419-35e362c5dc07?ixlib=rb-1.2.1&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&ixid=eyJhcHBfaWQiOjE3Nzg0fQ"
+              }
+              mb={8}
+            /> */}
                 <Heading
                   fontSize={{ base: "md", md: "lg", lg: "xl" }}
                   fontFamily={"body"}
@@ -174,8 +183,7 @@ export const ProjectCards: FC<showPass> = memo((props) => {
                     readOnly
                     height={8}
                   />
-                  <InputRightElement h={"full"}>
-                  </InputRightElement>
+                  <InputRightElement h={"full"}></InputRightElement>
                 </InputGroup>
 
                 <Button
@@ -194,7 +202,9 @@ export const ProjectCards: FC<showPass> = memo((props) => {
                   _focus={{
                     bg: "blue.400",
                   }}
-                  onClick={() => {navigate(`/${each.projectId}/chat`)}}
+                  onClick={() => {
+                    navigate(`/${each.projectId}/chat`);
+                  }}
                 >
                   参加
                 </Button>
@@ -205,14 +215,23 @@ export const ProjectCards: FC<showPass> = memo((props) => {
       </Grid>
     );
   } else {
-    return (
-      <>
-        <p style={noData}>
-          進行中のプロジェクトがありません。
-          <br />
-          「プロジェクトを新規作成」からプロジェクトを追加できます。
-        </p>
-      </>
+    return loadSkeleton ? (
+      <Spinner
+        thickness="4px"
+        speed="0.65s"
+        emptyColor="gray.200"
+        color="blue.500"
+        size="xl"
+        top="50vh"
+        left="50vw"
+        pos="absolute"
+      />
+    ) : (
+      <Text style={noData}>
+        進行中のプロジェクトがありません。
+        <br />
+        「プロジェクトを新規作成」からプロジェクトを追加できます。
+      </Text>
     );
   }
 });

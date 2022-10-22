@@ -1,6 +1,4 @@
 import {
-  Avatar,
-  Box,
   Flex,
   Grid,
   GridItem,
@@ -8,10 +6,10 @@ import {
   IconButton,
   Input,
   Stack,
-  Text,
+  Skeleton,
 } from "@chakra-ui/react";
 import { FC, memo, useContext, useEffect, useState } from "react";
-import { useParams, Navigate, useLocation } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { AppContext, AppContextType } from "../../App";
 import { IoSend } from "react-icons/io5";
 import { useProfile } from "../../hooks/useProfile";
@@ -27,10 +25,7 @@ import {
   doc,
   query,
   orderBy,
-  getDoc,
-  where,
   serverTimestamp,
-  DocumentData,
   getDocs,
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
@@ -42,7 +37,7 @@ export const ProjectChat: FC = memo(() => {
   const context: AppContextType = useContext(AppContext);
   const [isComposed, setIsComposed] = useState(false);
   const [sendDisable, setSendDisabled] = useState(true);
-
+  const [loadSkeleton, setLoadSkeleton] = useState(true);
   // const location = useLocation();
   // const [visiterStatus, setVisiterStatus] = useState<{
   //   visiter: boolean;
@@ -50,8 +45,6 @@ export const ProjectChat: FC = memo(() => {
   // }>(location.state as { visiter: boolean; Pass: string });
 
   // console.log(visiterStatus);
-
-  const params = useParams();
 
   const roomsData = useRooms();
   const rooms = roomsData.rooms;
@@ -107,7 +100,7 @@ export const ProjectChat: FC = memo(() => {
   // console.log(isAnonymous)
 
   const sendMessage = (event: any) => {
-    const roomSubCollectionRef = collection(db, "rooms", rooms?.id, "chat");
+    const roomSubCollectionRef = collection(db, "rooms", rooms?.id, "chats");
     setDoc(doc(roomSubCollectionRef), isAnonymous ? VisiterChatData : chatData);
     setMessage("");
     setSendDisabled(true);
@@ -117,7 +110,7 @@ export const ProjectChat: FC = memo(() => {
   useEffect(() => {
     // const q = collection(db, `rooms/${rooms?.id}/chat`);
     const q = query(
-      collection(db, `rooms/${rooms?.id}/chat`),
+      collection(db, `rooms/${rooms?.id}/chats`),
       orderBy("createdAt", "asc")
     );
 
@@ -140,12 +133,15 @@ export const ProjectChat: FC = memo(() => {
         result.push(chatDataArr);
       });
       context.setChatDataArr(result);
+      setTimeout(() => {
+        setLoadSkeleton(false);
+      }, 1000);
     });
   }, [rooms]);
 
   // Get Visiter Data
   useEffect(() => {
-    const q = query(collection(db, `rooms/${rooms?.id}/visiter`));
+    const q = query(collection(db, `rooms/${rooms?.id}/visiters`));
 
     getDocs(q)
       .then((querySnapshot) => {
@@ -188,8 +184,10 @@ export const ProjectChat: FC = memo(() => {
           borderBottomColor="gray.200"
         >
           <Flex height="100%" alignItems="center">
-            <Heading as="h2" fontSize="lg">
-              {rooms?.projectName}
+            <Heading as="h2" fontSize="lg" width="100%">
+              <Skeleton isLoaded={!loadSkeleton} fadeDuration={1}>
+                {rooms?.projectName}
+              </Skeleton>
             </Heading>
           </Flex>
         </GridItem>
@@ -209,6 +207,7 @@ export const ProjectChat: FC = memo(() => {
                   cid={data.cid}
                   key={data.cid}
                   isLastItem={isLastItem}
+                  loadSkeleton={loadSkeleton}
                 />
               );
             })}
@@ -241,9 +240,12 @@ export const ProjectChat: FC = memo(() => {
                     db,
                     "rooms",
                     rooms?.id,
-                    "chat"
+                    "chats"
                   );
-                  setDoc(doc(roomSubCollectionRef), isAnonymous ? VisiterChatData : chatData);
+                  setDoc(
+                    doc(roomSubCollectionRef),
+                    isAnonymous ? VisiterChatData : chatData
+                  );
                   setMessage("");
                   setSendDisabled(true);
                   event.preventDefault();

@@ -19,11 +19,10 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import { FC, memo, useContext, useEffect, useState } from "react";
+import { FC, memo, useEffect, useState } from "react";
 import { Auth, getAuth, onAuthStateChanged } from "firebase/auth";
 
 import { IoEllipsisHorizontalSharp } from "react-icons/io5";
-import { AppContext, AppContextType } from "../../../App";
 import { db } from "../../../firebase";
 import { useRooms } from "../../../hooks/useRooms";
 
@@ -32,7 +31,6 @@ type todoStatus = {
   tid: string;
 };
 export const TodoStatusButton: FC<todoStatus> = memo((props) => {
-  const context: AppContextType = useContext(AppContext);
   const { status, tid } = props;
 
   const roomsData = useRooms();
@@ -45,7 +43,7 @@ export const TodoStatusButton: FC<todoStatus> = memo((props) => {
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         const q = query(
-          collection(db, `rooms/${rooms?.id}/todo`),
+          collection(db, `rooms/${rooms?.id}/todos`),
           where("tid", "==", tid)
         );
         const querySnapshot = await getDocs(q);
@@ -59,25 +57,25 @@ export const TodoStatusButton: FC<todoStatus> = memo((props) => {
   }, [rooms]);
 
   const chengeToCurrent = async () => {
-    const todoStatusRef = doc(db, `rooms/${rooms?.id}/todo/${todoData}`);
+    const todoStatusRef = doc(db, `rooms/${rooms?.id}/todos/${todoData}`);
     await updateDoc(todoStatusRef, {
       status: "current",
     });
   };
   const chengeToProgressing = async () => {
-    const todoStatusRef = doc(db, `rooms/${rooms?.id}/todo/${todoData}`);
+    const todoStatusRef = doc(db, `rooms/${rooms?.id}/todos/${todoData}`);
     await updateDoc(todoStatusRef, {
       status: "progressing",
     });
   };
   const chengeToDone = async () => {
-    const todoStatusRef = doc(db, `rooms/${rooms?.id}/todo/${todoData}`);
+    const todoStatusRef = doc(db, `rooms/${rooms?.id}/todos/${todoData}`);
     await updateDoc(todoStatusRef, {
       status: "done",
     });
   };
   const deleteTodoData = async () => {
-    const todoStatusRef = doc(db, `rooms/${rooms?.id}/todo/${todoData}`);
+    const todoStatusRef = doc(db, `rooms/${rooms?.id}/todos/${todoData}`);
     await deleteDoc(todoStatusRef);
   };
 

@@ -13,18 +13,17 @@ import { PlanList } from "../PlanList";
 import { Howto } from "../Howto";
 import { CheckVisiter } from "../CheckVisiter";
 
-import { Auth, getAuth, onAuthStateChanged } from "firebase/auth";
-const auth: Auth = getAuth();
-onAuthStateChanged(auth, async (user) => {
-    if (user) {
-        console.log('user')
-      }
-      // ログイン時
-      else {
-          console.log('not user')
-      }
-});
-
+// import { Auth, getAuth, onAuthStateChanged } from "firebase/auth";
+// const auth: Auth = getAuth();
+// onAuthStateChanged(auth, async (user) => {
+//   if (user) {
+//     console.log("user");
+//   }
+//   // ログイン時
+//   else {
+//     console.log("not user");
+//   }
+// });
 
 export const Router: FC = memo(() => {
   return (
@@ -44,7 +43,6 @@ export const Router: FC = memo(() => {
             <Route path="/:id/list" element={<PlanList />} />
           </Route>
         </Route>
-        
       </Routes>
     </BrowserRouter>
   );
