@@ -183,7 +183,7 @@ export const ProjectCards: FC<showPass> = memo((props) => {
                     readOnly
                     height={8}
                   />
-                  <InputRightElement h={"full"}></InputRightElement>
+                  {/* <InputRightElement h={"full"}></InputRightElement> */}
                 </InputGroup>
 
                 <Button

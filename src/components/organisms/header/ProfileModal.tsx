@@ -182,6 +182,7 @@ export const InitialFocus: FC = () => {
         isOpen={isOpen}
         onClose={onClose}
         closeOnOverlayClick={false}
+        size={{ base: "xs", md: "md" }}
       >
         <ModalOverlay />
         <ModalContent>
@@ -224,16 +225,16 @@ export const InitialFocus: FC = () => {
                     />
                   )}
                 </Center>
-                <Center w="70%">
+                <Center w={{ base: "65%", md: "70%" }} ml={{ base: 5, md: 0 }}>
                   <input
                     style={inputStyle}
                     type="file"
                     onChange={changeFileHandler}
                     id="imageInput"
                   />
-                  <label style={labelStyle} htmlFor="imageInput">
+                  <FormLabel style={labelStyle} fontSize={{ base: '12px', md: '16px' }} htmlFor="imageInput">
                     プロフィール画像を選択
-                  </label>
+                  </FormLabel>
                 </Center>
               </Stack>
             </FormControl>

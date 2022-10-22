@@ -122,7 +122,7 @@ export const NewsProjectModal: FC<projectModalProps> = memo((props) => {
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      size={"xl"}
+      size={{ base: "xs", md: "xl" }}
       closeOnOverlayClick={false}
     >
       <ModalOverlay />

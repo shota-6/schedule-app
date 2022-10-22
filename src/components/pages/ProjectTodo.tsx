@@ -137,6 +137,7 @@ export const ProjectTodo: FC = memo(() => {
                   boxShadow={"2xl"}
                   rounded={"md"}
                   pos="relative"
+                  mt={5}
                 >
                   <Box
                     bg="blue.200"

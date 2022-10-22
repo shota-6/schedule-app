@@ -227,7 +227,7 @@ export const ProjectChat: FC = memo(() => {
             <Input
               variant={{ base: "unstyled", md: "flushed" }}
               placeholder="ここにメッセージ内容を入力"
-              size={{ base: "sm", md: "md" }}
+              size={{ base: "16px", md: "md" }}
               width="90%"
               onChange={handleMessage}
               autoFocus
