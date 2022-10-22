@@ -230,7 +230,7 @@ export const ProjectChat: FC = memo(() => {
               size={{ base: "16px", md: "md" }}
               width="90%"
               onChange={handleMessage}
-              autoFocus
+              autoFocus={window.matchMedia && window.matchMedia('(max-device-width: 767px)').matches ? false : true}
               onKeyDown={(event: any) => {
                 if (isComposed) return;
                 if (event.target.value === "") return;

@@ -241,7 +241,7 @@ export const InitialFocus: FC = () => {
             <FormControl>
               <FormLabel>ニックネーム</FormLabel>
               <Input
-                ref={initialRef}
+                // ref={initialRef}
                 // placeholder={`${user?.displayName}`}
                 placeholder={`${
                   context.nickName
