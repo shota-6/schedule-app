@@ -80,15 +80,38 @@ export const ProjectTodo: FC = memo(() => {
     context.setTodoStatusJa(statusJa);
   };
 
+  // userAgentでブラウザ情報を取得
+  const agent = window.navigator.userAgent.toLowerCase();
+
   if (!user) {
     return <Navigate replace to="/" />;
   } else {
     return (
       <>
+        <Flex
+          height="53px"
+          width="100%"
+          alignItems="center"
+          py={3}
+          px={5}
+          bg="white"
+          borderBottom="1px"
+          borderBottomColor="gray.200"
+          pos="fixed"
+          top="61px"
+          zIndex="10"
+          display={{ base: "block", md: "none" }}
+        >
+          <Heading as="h2" fontSize="lg" width="100%">
+            <Skeleton isLoaded={!loadSkeleton} fadeDuration={1}>
+              {rooms?.projectName}
+            </Skeleton>
+          </Heading>
+        </Flex>
         <Grid
-          templateRows="repeat(14, 1fr)"
+          templateRows={{ base: "repeat(13, 1fr)", md: "repeat(14, 1fr)" }}
           templateColumns="repeat(7, 1fr)"
-          height={"calc( 100vh - 60px )"}
+          height={{ base: "calc( 100vh - 113px )", md: "calc( 100vh - 60px )" }}
           pos="fixed"
           bottom="0"
           right="0"
@@ -102,6 +125,7 @@ export const ProjectTodo: FC = memo(() => {
             bg="white"
             borderBottom="1px"
             borderBottomColor="gray.200"
+            display={{ base: "none", md: "block" }}
           >
             <Flex height="100%" alignItems="center">
               <Heading as="h2" fontSize="lg" width="100%">
@@ -116,12 +140,22 @@ export const ProjectTodo: FC = memo(() => {
             colSpan={7}
             rowSpan={14}
             overflow={{ base: "auto", lg: "inherit" }}
+            mt={{
+              base:
+                agent.indexOf("crios") != -1
+                  ? "100px"
+                  : agent.indexOf("gecko) version") != -1
+                  ? "85px"
+                  : "0",
+              md: 0,
+            }}
           >
             <Flex
               justify="space-between"
               m={5}
               flexDirection={{ base: "column", lg: "inherit" }}
               mb={{ base: 20, md: 5, lg: 0 }}
+              
             >
               <Skeleton
                 isLoaded={!loadSkeleton}
@@ -129,7 +163,6 @@ export const ProjectTodo: FC = memo(() => {
                 w={"full"}
                 boxShadow={"2xl"}
                 rounded={"md"}
-                mt={{ base: 10, md: 0 }}
               >
                 <Box
                   bg="white"

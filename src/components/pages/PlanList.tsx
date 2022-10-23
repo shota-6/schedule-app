@@ -31,51 +31,90 @@ export const PlanList: FC = memo(() => {
     }, 1000);
   }, []);
 
+  // userAgentでブラウザ情報を取得
+  const agent = window.navigator.userAgent.toLowerCase();
+
   if (!user) {
     return <Navigate replace to="/" />;
   } else {
     return (
-      <Grid
-        templateRows="repeat(14, 1fr)"
-        templateColumns="repeat(7, 1fr)"
-        height={"calc( 100vh - 60px )"}
-        pos="fixed"
-        bottom="0"
-        right="0"
-        width={{ base: "100vw", md: "86vw" }}
-      >
-        <GridItem
-          colSpan={7}
-          rowSpan={1}
+      <>
+        <Flex
+          height="53px"
+          width="100%"
+          alignItems="center"
           py={3}
           px={5}
           bg="white"
           borderBottom="1px"
           borderBottomColor="gray.200"
+          pos="fixed"
+          top="61px"
+          zIndex="10"
+          display={{ base: "block", md: "none" }}
         >
-          <Flex height="100%" alignItems="center">
-            <Heading as="h2" fontSize="lg" width="100%">
-              <Skeleton isLoaded={!loadSkeleton} fadeDuration={1}>
-                {rooms?.projectName}
-              </Skeleton>
-            </Heading>
-          </Flex>
-        </GridItem>
+          <Heading as="h2" fontSize="lg" width="100%">
+            <Skeleton isLoaded={!loadSkeleton} fadeDuration={1}>
+              {rooms?.projectName}
+            </Skeleton>
+          </Heading>
+        </Flex>
+        <Grid
+          templateRows={{ base: "repeat(13, 1fr)", md: "repeat(14, 1fr)" }}
+          templateColumns="repeat(7, 1fr)"
+          height={{ base: "calc( 100vh - 113px )", md: "calc( 100vh - 60px )" }}
+          pos="fixed"
+          bottom="0"
+          right="0"
+          width={{ base: "100vw", md: "86vw" }}
+        >
+          <GridItem
+            colSpan={7}
+            rowSpan={1}
+            py={3}
+            px={5}
+            bg="white"
+            borderBottom="1px"
+            borderBottomColor="gray.200"
+            display={{ base: "none", md: "block" }}
+          >
+            <Flex height="100%" alignItems="center">
+              <Heading as="h2" fontSize="lg" width="100%">
+                <Skeleton isLoaded={!loadSkeleton} fadeDuration={1}>
+                  {rooms?.projectName}
+                </Skeleton>
+              </Heading>
+            </Flex>
+          </GridItem>
 
-        <GridItem colSpan={7} rowSpan={14} p={5}>
-          <Skeleton isLoaded={!loadSkeleton} fadeDuration={1}>
-            <FullCalendar
-              height="75vh"
-              plugins={[listPlugin]}
-              initialView="listMonth"
-              locales={allLocales}
-              locale="ja"
-              buttonText={{ today: "今月" }}
-              events={calendar}
-            />
-          </Skeleton>
-        </GridItem>
-      </Grid>
+          <GridItem
+            colSpan={7}
+            rowSpan={14}
+            p={5}
+            mt={{
+              base:
+                agent.indexOf("crios") != -1
+                  ? "100px"
+                  : agent.indexOf("gecko) version") != -1
+                  ? "85px"
+                  : "0",
+              md: 0,
+            }}
+          >
+            <Skeleton isLoaded={!loadSkeleton} fadeDuration={1}>
+              <FullCalendar
+                height="75vh"
+                plugins={[listPlugin]}
+                initialView="listMonth"
+                locales={allLocales}
+                locale="ja"
+                buttonText={{ today: "今月" }}
+                events={calendar}
+              />
+            </Skeleton>
+          </GridItem>
+        </Grid>
+      </>
     );
   }
 });

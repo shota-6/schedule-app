@@ -161,112 +161,156 @@ export const ProjectChat: FC = memo(() => {
 
   const MessageLength = context.chatDataArr.length;
 
+  // userAgentでブラウザ情報を取得
+  const agent = window.navigator.userAgent.toLowerCase();
+
   if (!user) {
     return <Navigate replace to="/" />;
   } else {
     return (
-      <Grid
-        templateRows="repeat(14, 1fr)"
-        templateColumns="repeat(7, 1fr)"
-        height={"calc( 100vh - 60px )"}
-        pos="fixed"
-        bottom="0"
-        right="0"
-        width={{ base: "100vw", md: "86vw" }}
-      >
-        <GridItem
-          colSpan={7}
-          rowSpan={1}
+      <>
+        <Flex
+          height="53px"
+          width="100%"
+          alignItems="center"
           py={3}
           px={5}
           bg="white"
           borderBottom="1px"
           borderBottomColor="gray.200"
+          pos="fixed"
+          top="61px"
+          zIndex="10"
+          display={{ base: "block", md: "none" }}
         >
-          <Flex height="100%" alignItems="center">
-            <Heading as="h2" fontSize="lg" width="100%">
-              <Skeleton isLoaded={!loadSkeleton} fadeDuration={1}>
-                {rooms?.projectName}
-              </Skeleton>
-            </Heading>
-          </Flex>
-        </GridItem>
-
-        <GridItem colSpan={7} rowSpan={{ base: 11, md: 12 }} overflow="auto">
-          <Stack spacing={0}>
-            {context.chatDataArr.map((data, index) => {
-              const isLastItem = MessageLength === index + 1;
-
-              return (
-                <ChatMessage
-                  message={data.message}
-                  createdAt={data.createdAt}
-                  name={data.name}
-                  AvatarImg={data.AvatarImg}
-                  uid={data.uid}
-                  cid={data.cid}
-                  key={data.cid}
-                  isLastItem={isLastItem}
-                  loadSkeleton={loadSkeleton}
-                />
-              );
-            })}
-          </Stack>
-        </GridItem>
-
-        <GridItem
-          px={5}
-          py={{ base: 2, md: 5 }}
-          colSpan={7}
-          rowSpan={1}
-          bg="white"
-          borderTop="1px"
-          borderTopColor="gray.200"
+          <Heading as="h2" fontSize="lg" width="100%">
+            <Skeleton isLoaded={!loadSkeleton} fadeDuration={1}>
+              {rooms?.projectName}
+            </Skeleton>
+          </Heading>
+        </Flex>
+        <Grid
+          templateRows={{ base: "repeat(13, 1fr)", md: "repeat(14, 1fr)" }}
+          templateColumns="repeat(7, 1fr)"
+          height={{ base: "calc( 100vh - 113px )", md: "calc( 100vh - 60px )" }}
+          pos="fixed"
+          bottom="0"
+          right="0"
+          width={{ base: "100vw", md: "86vw" }}
         >
-          <Flex justify="space-between">
-            <Input
-              variant={{ base: "unstyled", md: "flushed" }}
-              placeholder="ここにメッセージ内容を入力"
-              size={{ base: "16px", md: "md" }}
-              width="90%"
-              onChange={handleMessage}
-              autoFocus={window.matchMedia && window.matchMedia('(max-device-width: 767px)').matches ? false : true}
-              onKeyDown={(event: any) => {
-                if (isComposed) return;
-                if (event.target.value === "") return;
+          <GridItem
+            colSpan={7}
+            rowSpan={1}
+            py={3}
+            px={5}
+            bg="white"
+            borderBottom="1px"
+            borderBottomColor="gray.200"
+            display={{ base: "none", md: "block" }}
+          >
+            <Flex height="100%" alignItems="center">
+              <Heading as="h2" fontSize="lg" width="100%">
+                <Skeleton isLoaded={!loadSkeleton} fadeDuration={1}>
+                  {rooms?.projectName}
+                </Skeleton>
+              </Heading>
+            </Flex>
+          </GridItem>
 
-                if (event.key === "Enter") {
-                  const roomSubCollectionRef = collection(
-                    db,
-                    "rooms",
-                    rooms?.id,
-                    "chats"
-                  );
-                  setDoc(
-                    doc(roomSubCollectionRef),
-                    isAnonymous ? VisiterChatData : chatData
-                  );
-                  setMessage("");
-                  setSendDisabled(true);
-                  event.preventDefault();
+          <GridItem
+            colSpan={7}
+            rowSpan={{ base: 11, md: 12 }}
+            overflow="auto"
+            mt={{
+              base:
+                agent.indexOf("crios") != -1
+                  ? "100px"
+                  : agent.indexOf("gecko) version") != -1
+                  ? "85px"
+                  : "0",
+              md: 0,
+            }}
+          >
+            <Stack spacing={0}>
+              {context.chatDataArr.map((data, index) => {
+                const isLastItem = MessageLength === index + 1;
+
+                return (
+                  <ChatMessage
+                    message={data.message}
+                    createdAt={data.createdAt}
+                    name={data.name}
+                    AvatarImg={data.AvatarImg}
+                    uid={data.uid}
+                    cid={data.cid}
+                    key={data.cid}
+                    isLastItem={isLastItem}
+                    loadSkeleton={loadSkeleton}
+                  />
+                );
+              })}
+            </Stack>
+          </GridItem>
+
+          <GridItem
+            px={5}
+            py={{ base: 2, md: 5 }}
+            colSpan={7}
+            rowSpan={1}
+            bg="white"
+            borderTop="1px"
+            borderTopColor="gray.200"
+          >
+            <Flex justify="space-between">
+              <Input
+                variant={{ base: "unstyled", md: "flushed" }}
+                placeholder="ここにメッセージ内容を入力"
+                size={{ base: "16px", md: "md" }}
+                width="90%"
+                onChange={handleMessage}
+                autoFocus={
+                  window.matchMedia &&
+                  window.matchMedia("(max-device-width: 767px)").matches
+                    ? false
+                    : true
                 }
-              }}
-              onCompositionStart={() => setIsComposed(true)}
-              onCompositionEnd={() => setIsComposed(false)}
-              value={message}
-            />
-            <IconButton
-              aria-label="SEND"
-              icon={<IoSend />}
-              width="5%"
-              colorScheme="blue"
-              size="sm"
-              onClick={sendMessage}
-              disabled={sendDisable}
-            />
-          </Flex>
-        </GridItem>
-      </Grid>
+                onKeyDown={(event: any) => {
+                  if (isComposed) return;
+                  if (event.target.value === "") return;
+
+                  if (event.key === "Enter") {
+                    const roomSubCollectionRef = collection(
+                      db,
+                      "rooms",
+                      rooms?.id,
+                      "chats"
+                    );
+                    setDoc(
+                      doc(roomSubCollectionRef),
+                      isAnonymous ? VisiterChatData : chatData
+                    );
+                    setMessage("");
+                    setSendDisabled(true);
+                    event.preventDefault();
+                  }
+                }}
+                onCompositionStart={() => setIsComposed(true)}
+                onCompositionEnd={() => setIsComposed(false)}
+                value={message}
+              />
+              <IconButton
+                aria-label="SEND"
+                icon={<IoSend />}
+                width="5%"
+                colorScheme="blue"
+                size="sm"
+                onClick={sendMessage}
+                disabled={sendDisable}
+              />
+            </Flex>
+          </GridItem>
+        </Grid>
+      </>
     );
   }
 });
