@@ -23,7 +23,7 @@ import {
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { Logo } from "../../atoms/Logo";
 import { AppContext, AppContextType } from "../../../App";
-import { InitialFocus } from "./ProfileModal";
+import { ProfileModal } from "./ProfileModal";
 import { useProfile } from "../../../hooks/useProfile";
 import { db } from "../../../firebase";
 
@@ -46,7 +46,10 @@ export const WithSubNavigation: FC = () => {
   const user = auth.currentUser;
   const isAnonymous = user?.isAnonymous;
 
-  const [userArr, setUserArr] = useState<userHeaderData[]>([]);
+  // const [userArr, setUserArr] = useState<userHeaderData[]>([]);
+
+  const [profileName, setProfileName] = useState<string>("");
+  const [profileAvatar, setProfileAvatar] = useState<string>("");
 
   const context: AppContextType = useContext(AppContext);
 
@@ -107,18 +110,13 @@ export const WithSubNavigation: FC = () => {
 
       // リアルタイムのデータ取得
       onSnapshot(q, (querySnapshot) => {
-        const result: any[] = [];
         querySnapshot.forEach((doc) => {
-          const userArr = {
-            name: doc.data().name ?? "",
-            email: doc.data().email ?? "",
-            avatarImg: doc.data().avatarImg ?? "",
-            uid: doc.id,
-          };
+          const profileName = doc.data().name ?? "";
+          const profileAvatar = doc.data().avatarImg ?? "";
 
-          result.push(userArr);
+          setProfileName(profileName);
+          setProfileAvatar(profileAvatar);
         });
-        setUserArr(result);
       });
     }
   }, []);
@@ -200,30 +198,12 @@ export const WithSubNavigation: FC = () => {
                 cursor={"pointer"}
                 minW={0}
               >
-                <Avatar
-                  size={"sm"}
-                  src={
-                    context.file
-                      ? URL.createObjectURL(context.file)
-                      : profile
-                      ? profile?.avatarImg
-                      : ""
-                  }
-                />
+                <Avatar size={"sm"} src={profileAvatar} />
               </MenuButton>
               <MenuList alignItems={"center"} pb={0}>
                 <br />
                 <Center>
-                  <Avatar
-                    size={"2xl"}
-                    src={
-                      context.file
-                        ? URL.createObjectURL(context.file)
-                        : profile
-                        ? profile?.avatarImg
-                        : ""
-                    }
-                  />
+                  <Avatar size={"2xl"} src={profileAvatar} />
                 </Center>
                 <br />
                 <Center>
@@ -233,11 +213,14 @@ export const WithSubNavigation: FC = () => {
                           : profile
                           ? profile.name
                           : ""} */}
-                  {userArr.map((data) => data.name)}
+                  {profileName}
                 </Center>
                 <br />
-                <MenuDivider mb={0}/>
-                <InitialFocus />
+                <MenuDivider mb={0} />
+                <ProfileModal
+                  profileName={profileName}
+                  profileAvatar={profileAvatar}
+                />
                 <Button
                   width="100%"
                   bg="white"

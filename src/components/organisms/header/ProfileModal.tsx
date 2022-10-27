@@ -30,8 +30,14 @@ import { ImagePreview } from "./ImagePreview";
 import { useProfile } from "../../../hooks/useProfile";
 import * as CSS from "csstype";
 
-export const InitialFocus: FC = () => {
+type userProps = {
+  profileName: string;
+  profileAvatar: string;
+};
+
+export const ProfileModal: FC<userProps> = (props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { profileName, profileAvatar } = props;
 
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
@@ -60,6 +66,7 @@ export const InitialFocus: FC = () => {
   const iconReset = useCallback(() => {
     context.setFile(null);
     setDisableImg(true);
+    setDisableName(true);
   }, []);
 
   //   save profile
@@ -85,7 +92,7 @@ export const InitialFocus: FC = () => {
             if (profile) {
               const userRef = doc(db, "users", profile?.id);
               await updateDoc(userRef, {
-                name: context.nickName,
+                name: context.nickName === '' ? profileName : context.nickName,
                 avatarImg: url,
               });
               setLoading(false);
@@ -158,8 +165,8 @@ export const InitialFocus: FC = () => {
   };
   const avatarCloseStyle: CSS.Properties = {
     position: "absolute",
-    left: "75px",
-    top: "30px",
+    left: "68px",
+    top: "-3px",
     border: "3px solid white",
   };
 
@@ -199,7 +206,7 @@ export const InitialFocus: FC = () => {
               <Stack direction={"row"} spacing={6} pb={7}>
                 <Center w="30%">
                   {context.file ? (
-                    <>
+                    <Avatar style={avatarStyle}>
                       <ImagePreview file={context.file} />
                       <IconButton
                         style={avatarCloseStyle}
@@ -210,18 +217,19 @@ export const InitialFocus: FC = () => {
                         icon={<SmallCloseIcon />}
                         onClick={iconReset}
                       />
-                    </>
+                    </Avatar>
                   ) : (
                     <Avatar
                       style={avatarStyle}
+                      src={profileAvatar}
                       //   src={context.avatarDefaultImg}
-                      src={
-                        context.file
-                          ? URL.createObjectURL(context.file)
-                          : profile
-                          ? profile?.avatarImg
-                          : ""
-                      }
+                      // src={
+                      //   context.file
+                      //     ? URL.createObjectURL(context.file)
+                      //     : profile
+                      //     ? profile?.avatarImg
+                      //     : ""
+                      // }
                     />
                   )}
                 </Center>
@@ -232,7 +240,11 @@ export const InitialFocus: FC = () => {
                     onChange={changeFileHandler}
                     id="imageInput"
                   />
-                  <FormLabel style={labelStyle} fontSize={{ base: '12px', md: '16px' }} htmlFor="imageInput">
+                  <FormLabel
+                    style={labelStyle}
+                    fontSize={{ base: "12px", md: "16px" }}
+                    htmlFor="imageInput"
+                  >
                     プロフィール画像を選択
                   </FormLabel>
                 </Center>
@@ -243,13 +255,7 @@ export const InitialFocus: FC = () => {
               <Input
                 // ref={initialRef}
                 // placeholder={`${user?.displayName}`}
-                placeholder={`${
-                  context.nickName
-                    ? context.nickName
-                    : profile
-                    ? profile.name
-                    : ""
-                }`}
+                placeholder={`${profileName}`}
                 onChange={changeProfileName}
               />
             </FormControl>
@@ -262,6 +268,7 @@ export const InitialFocus: FC = () => {
               onClick={() => {
                 saveProfile();
                 onClose();
+                iconReset();
               }}
               isLoading={loading}
               disabled={disableImg && disableName}
