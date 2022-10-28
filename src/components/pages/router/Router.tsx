@@ -12,6 +12,7 @@ import { ProjectCalendar } from "../ProjectCalendar";
 import { PlanList } from "../PlanList";
 import { Howto } from "../Howto";
 import { CheckVisiter } from "../CheckVisiter";
+import { LoginHeader } from "../../template/LoginHeader";
 
 // import { Auth, getAuth, onAuthStateChanged } from "firebase/auth";
 // const auth: Auth = getAuth();
@@ -29,9 +30,11 @@ export const Router: FC = memo(() => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route index element={<AuthPage />} />
-        <Route path="/visiter" element={<LoginVisiter />} />
-        <Route path="/confirm" element={<CheckVisiter />} />
+        <Route path="/" element={<LoginHeader />}>
+          <Route index element={<AuthPage />} />
+          <Route path="/visiter" element={<LoginVisiter />} />
+          <Route path="/confirm" element={<CheckVisiter />} />
+        </Route>
 
         <Route path="/" element={<HeaderLayout />}>
           <Route path="/home" element={<HomeUser />} />

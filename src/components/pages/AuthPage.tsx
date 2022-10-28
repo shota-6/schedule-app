@@ -41,8 +41,6 @@ export const AuthPage: FC = memo(() => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
-  const [isLogin, setIsLogin] = useState<boolean>(false);
-
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [checkName, setCheckName] = useState<boolean>(false);
@@ -211,18 +209,18 @@ export const AuthPage: FC = memo(() => {
       <Flex minH={"100vh"} align={"center"} justify={"center"} bg="gray.50">
         <Stack spacing={8} mx={"auto"} w={"xl"} py={12} px={6}>
           <Stack align={"center"}>
-            <Heading fontSize={"3xl"} textAlign={"center"}>
-              {isLogin ? "ログイン" : "新規登録"}
+            <Heading fontSize={{base: '2xl', md: '3xl'}} textAlign={"center"}>
+              {context.isLogin ? "ログイン" : "新規登録"}
             </Heading>
-            <Text fontSize={"lg"} color={"gray.600"} align={"center"}>
-              {isLogin
+            <Text fontSize={{base: 'md', md: 'lg'}} color={"gray.600"} align={"center"}>
+              {context.isLogin
                 ? "既に登録済みの方はこちらからログインしてください。"
                 : "ユーザー登録を行うと、プロジェクトの作成や共有の機能が使用できるようになります。"}
             </Text>
           </Stack>
-          <Box rounded={"lg"} bg="white" boxShadow={"lg"} p={8}>
+          <Box rounded={"lg"} bg="white" boxShadow={"lg"} py={6} px={8}>
             <Stack spacing={4}>
-              {isLogin ? (
+              {context.isLogin ? (
                 ""
               ) : (
                 <FormControl id="nickName" isRequired>
@@ -279,56 +277,47 @@ export const AuthPage: FC = memo(() => {
               <Stack spacing={10} pt={2}>
                 <Button
                   type="button"
-                  loadingText={isLogin ? "ログイン中" : "登録中"}
-                  size="lg"
+                  loadingText={context.isLogin ? "ログイン中" : "登録中"}
+                  size={{base: 'md', md: 'lg'}}
                   bg={"blue.400"}
                   color={"white"}
                   _hover={{
                     bg: "blue.500",
                   }}
-                  onClick={isLogin ? Login : Register}
+                  onClick={context.isLogin ? Login : Register}
                   isLoading={isLoading}
                   disabled={
-                    isLogin
+                    context.isLogin
                       ? checkLogin.some((ok) => !ok)
                       : checkRegister.some((ok) => !ok)
                   }
                 >
-                  {isLogin ? "ログイン" : "新規登録"}
+                  {context.isLogin ? "ログイン" : "新規登録"}
                 </Button>
               </Stack>
-              <Stack pt={6}>
-                <Text align={"center"}>
-                  <Link
-                    onClick={() => setIsLogin(!isLogin)}
-                    style={{ pointerEvents: "auto", cursor: "pointer" }}
-                    color={"blue.400"}
-                    _hover={{
-                      textDecoration: "none",
-                      opacity: 0.7,
-                    }}
-                  >
-                    　{isLogin ? "新規登録しますか?" : "ログインしますか？"}
-                  </Link>
-                </Text>
+              <Stack pt={1}>
+                <Button
+                  type="button"
+                  size={{base: 'md', md: 'lg'}}
+                  bg={"white"}
+                  color={"blue.400"}
+                  as={RouterLink}
+                  to="/visiter"
+                  border="2px"
+                  borderColor="blue.400"
+                  _hover={{
+                    bg: "blue.400",
+                    color: "white",
+                  }}
+                  onClick={() => {
+                    context.setIsLogin(true);
+                  }}
+                >
+                  共有パスをお持ちの方
+                </Button>
               </Stack>
             </Stack>
           </Box>
-          <Text align={"center"}>
-            共有パスをお持ちの方は
-            <Link
-              as={RouterLink}
-              to="/visiter"
-              color={"blue.400"}
-              _hover={{
-                textDecoration: "none",
-                opacity: 0.7,
-              }}
-            >
-              こちら
-            </Link>
-            からプロジェクトに参加してください
-          </Text>
         </Stack>
       </Flex>
     );

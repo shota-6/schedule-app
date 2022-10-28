@@ -164,7 +164,47 @@ export const WithSubNavigation: FC = () => {
           </Text>
 
           <Flex display={{ base: "none", md: "flex" }} ml={10}>
-            <DesktopNav />
+            <Stack direction={"row"} spacing={4}>
+              <Box>
+                {!isAnonymous ? (
+                  <Link
+                    as={RouterLink}
+                    to="/home"
+                    color="gray.600"
+                    p={2}
+                    mr={5}
+                    fontSize={"sm"}
+                    fontWeight={500}
+                    _hover={{
+                      textDecoration: "none",
+                      color: "gray.800",
+                    }}
+                    display={!user ? "none" : "initial"}
+                    className={styles.activeHeaderNav}
+                  >
+                    プロジェクト一覧
+                  </Link>
+                ) : null}
+                <Link
+                  as={RouterLink}
+                  to="/howto"
+                  color="gray.600"
+                  p={2}
+                  fontSize={"sm"}
+                  fontWeight={500}
+                  _hover={{
+                    textDecoration: "none",
+                    color: "gray.800",
+                  }}
+                  className={styles.activeHeaderNav}
+                  onClick={() => {
+                    context.setIsLogin(true);
+                  }}
+                >
+                  使い方
+                </Link>
+              </Box>
+            </Stack>
           </Flex>
         </Flex>
 
@@ -174,7 +214,7 @@ export const WithSubNavigation: FC = () => {
           direction={"row"}
           spacing={6}
         >
-          {isAnonymous ? (
+          {isAnonymous || !user ? (
             <Button
               as={RouterLink}
               to="/"
@@ -186,8 +226,9 @@ export const WithSubNavigation: FC = () => {
               _hover={{
                 bg: "blue.400",
               }}
+              onClick={() => context.setIsLogin(!context.isLogin)}
             >
-              ユーザー登録
+              {context.isLogin ? "ユーザー登録" : "ログイン"}
             </Button>
           ) : (
             <Menu>
@@ -197,6 +238,7 @@ export const WithSubNavigation: FC = () => {
                 variant={"link"}
                 cursor={"pointer"}
                 minW={0}
+                display={!user ? "none" : "initial"}
               >
                 <Avatar size={"sm"} src={profileAvatar} />
               </MenuButton>
@@ -246,7 +288,6 @@ export const WithSubNavigation: FC = () => {
                 color="gray.600"
                 as={RouterLink}
                 to="/home"
-                display="block"
                 py={5}
                 px={5}
                 fontSize="sm"
@@ -255,6 +296,7 @@ export const WithSubNavigation: FC = () => {
                 }}
                 borderBottom="1px"
                 borderBottomColor="gray.200"
+                display={!user ? "none" : "block"}
                 className={styles.activeHeaderSpNav}
                 onClick={onToggle}
               >
@@ -277,7 +319,10 @@ export const WithSubNavigation: FC = () => {
               borderBottom="1px"
               borderBottomColor="gray.200"
               className={styles.activeHeaderSpNav}
-              onClick={onToggle}
+              onClick={() => {
+                context.setIsLogin(true);
+                onToggle();
+              }}
             >
               使い方
             </Link>
@@ -285,50 +330,5 @@ export const WithSubNavigation: FC = () => {
         </Stack>
       </Collapse>
     </Box>
-  );
-};
-
-const DesktopNav = () => {
-  const auth = getAuth();
-  const user = auth.currentUser;
-  const isAnonymous = user?.isAnonymous;
-  return (
-    <Stack direction={"row"} spacing={4}>
-      <Box>
-        {!isAnonymous ? (
-          <Link
-            as={RouterLink}
-            to="/home"
-            color="gray.600"
-            p={2}
-            mr={5}
-            fontSize={"sm"}
-            fontWeight={500}
-            _hover={{
-              textDecoration: "none",
-              color: "gray.800",
-            }}
-            className={styles.activeHeaderNav}
-          >
-            プロジェクト一覧
-          </Link>
-        ) : null}
-        <Link
-          as={RouterLink}
-          to="/howto"
-          color="gray.600"
-          p={2}
-          fontSize={"sm"}
-          fontWeight={500}
-          _hover={{
-            textDecoration: "none",
-            color: "gray.800",
-          }}
-          className={styles.activeHeaderNav}
-        >
-          使い方
-        </Link>
-      </Box>
-    </Stack>
   );
 };

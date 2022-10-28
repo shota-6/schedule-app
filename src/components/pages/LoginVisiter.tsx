@@ -62,10 +62,10 @@ export const LoginVisiter: FC = memo(() => {
     <Flex minH={"100vh"} align={"center"} justify={"center"} bg="gray.50">
       <Stack spacing={8} mx={"auto"} w={"xl"} py={12} px={6}>
         <Stack align={"center"}>
-          <Heading fontSize={"3xl"} textAlign={"center"}>
+          <Heading fontSize={{base: '2xl', md: '3xl'}} textAlign={"center"}>
             プロジェクトに参加する
           </Heading>
-          <Text fontSize={"lg"} color={"gray.600"}>
+          <Text fontSize={{base: 'md', md: 'lg'}} color={"gray.600"}>
             共有されたパスを入力してください。
           </Text>
         </Stack>

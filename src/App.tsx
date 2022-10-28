@@ -46,6 +46,9 @@ type checkVisiterData = {
 };
 
 export interface AppContextType {
+  isLogin: boolean;
+  setIsLogin: (isLogin: boolean) => void;
+
   nickName: string;
   setNickName: (nickName: string) => void;
 
@@ -108,6 +111,9 @@ export interface AppContextType {
 }
 
 export const AppContext = createContext<AppContextType>({
+  isLogin: false,
+  setIsLogin: (isLogin: boolean) => {},
+
   nickName: "",
   setNickName: (nickName: string) => {},
 
@@ -171,6 +177,9 @@ export const AppContext = createContext<AppContextType>({
 
 const App: FC = () => {
   const context: AppContextType = useContext(AppContext);
+
+  const [isLogin, setIsLogin] = useState<boolean>(context.isLogin);
+
   const [nickName, setNickName] = useState(context.nickName);
   const [avatarDefaultImg, setAvatarDefaultImg] = useState(
     context.avatarDefaultImg
@@ -208,6 +217,9 @@ const App: FC = () => {
   const [visiterName, setVisiterName] = useState(context.visiterName);
 
   const newContext: AppContextType = {
+    isLogin, 
+    setIsLogin,
+
     nickName,
     setNickName,
 
