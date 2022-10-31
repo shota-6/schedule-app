@@ -92,7 +92,8 @@ export const ProjectChat: FC = memo(() => {
   const VisiterChatData = {
     message: message,
     createdAt: serverTimestamp(),
-    name: context.visiterName,
+    // name: context.visiterName,
+    name:'ゲスト',
     uid: user?.uid,
     cid: createChatId(),
   };

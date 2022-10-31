@@ -37,15 +37,15 @@ export const LoginVisiter: FC = memo(() => {
 
   // console.log(context.roomArr);
 
-  const handleName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    context.setNickName(event.currentTarget.value);
+  // const handleName = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   context.setNickName(event.currentTarget.value);
 
-    if (event.currentTarget.value) {
-      setCheckName(true);
-    } else {
-      setCheckName(false);
-    }
-  };
+  //   if (event.currentTarget.value) {
+  //     setCheckName(true);
+  //   } else {
+  //     setCheckName(false);
+  //   }
+  // };
   const handlePass = (event: React.ChangeEvent<HTMLInputElement>) => {
     setVisiterPass(event.target.value);
 
@@ -56,7 +56,8 @@ export const LoginVisiter: FC = memo(() => {
     }
   };
 
-  const checkVisiter = [checkName, checkPass];
+  // const checkVisiter = [checkName, checkPass];
+  const checkVisiter = [checkPass];
 
   return (
     <Flex minH={"100vh"} align={"center"} justify={"center"} bg="gray.50">
@@ -71,10 +72,10 @@ export const LoginVisiter: FC = memo(() => {
         </Stack>
         <Box rounded={"lg"} bg="white" boxShadow={"lg"} p={8}>
           <Stack spacing={4}>
-            <FormControl id="nickname" isRequired>
+            {/* <FormControl id="nickname" isRequired>
               <FormLabel>ニックネーム</FormLabel>
               <Input type="text" onChange={handleName} />
-            </FormControl>
+            </FormControl> */}
             <FormControl id="password" isRequired>
               <FormLabel>共有パス</FormLabel>
               <InputGroup>
