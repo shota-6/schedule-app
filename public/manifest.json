@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Tasks",
+  "name": "Tasks - プロジェクト一括管理アプリ",
   "icons": [
     {
       "src": "favicon.ico",
